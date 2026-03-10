@@ -8,12 +8,6 @@ SHUNIT_PARENT=$0
 # Use system Spaceship or fallback to Spaceship Docker on CI
 typeset -g SPACESHIP_ROOT="${SPACESHIP_ROOT:=/spaceship}"
 
-# Mocked tool CLI
-mocked_version="v1.0.0-mocked"
-foobar() {
-  echo "$mocked_version"
-}
-
 # ------------------------------------------------------------------------------
 # SHUNIT2 HOOKS
 # ------------------------------------------------------------------------------
@@ -27,12 +21,12 @@ oneTimeSetUp() {
   export TERM="xterm-256color"
 
   source "$SPACESHIP_ROOT/spaceship.zsh"
-  source "$(dirname $CWD)/spaceship-section.plugin.zsh"
+  source "$(dirname $CWD)/spaceship-jj.plugin.zsh"
 
   SPACESHIP_PROMPT_ASYNC=false
   SPACESHIP_PROMPT_FIRST_PREFIX_SHOW=true
   SPACESHIP_PROMPT_ADD_NEWLINE=false
-  SPACESHIP_PROMPT_ORDER=(foobar)
+  SPACESHIP_PROMPT_ORDER=(jj)
 
   echo "Spaceship version: $(spaceship --version)"
 }
@@ -48,25 +42,46 @@ oneTimeTearDown() {
 # TEST CASES
 # ------------------------------------------------------------------------------
 
-test_incorrect_env() {
+test_jj_no_jj_repo() {
   local expected=""
   local actual="$(spaceship::testkit::render_prompt)"
 
-  assertEquals "do not render system version" "$expected" "$actual"
+  assertEquals "render in dir with no jj repo" "$expected" "$actual"
 }
 
-test_mocked_version() {
+test_jj_dir_without_desc() {
   # Prepare the environment
-  touch $SHUNIT_TMPDIR/test.foo
+  jj git init
 
-  local prefix="%{%B%}$SPACESHIP_JJ_PREFIX%{%b%}"
-  local content="%{%B%F{$SPACESHIP_JJ_COLOR}%}$SPACESHIP_JJ_SYMBOL$mocked_version%{%b%f%}"
-  local suffix="%{%B%}$SPACESHIP_JJ_SUFFIX%{%b%}"
-
-  local expected="$prefix$content$suffix"
+  local pattern='%{%B%}via %{%b%}%{%B%F{white}%}%{%B%F{yellow}%}🥋 [a-z0-9]{8}%{%b%f%}%{%b%f%}%{%B%} %{%b%}'
   local actual="$(spaceship::testkit::render_prompt)"
 
-  assertEquals "render mocked version" "$expected" "$actual"
+  [[ "$actual" =~ $pattern ]] \
+    || fail "render in jj dir with pattern: <$pattern>, but was <$actual>"
+}
+
+test_jj_dir_with_desc() {
+  # Prepare the environment
+  jj desc -m "Init" 2>&1 > /dev/null
+
+  local pattern='%{%B%}via %{%b%}%{%B%F{white}%}%{%B%F{yellow}%}🥋 [a-z0-9]{8} \(Init\)%{%b%f%}%{%b%f%}%{%B%} %{%b%}'
+  local actual="$(spaceship::testkit::render_prompt)"
+
+  [[ "$actual" =~ $pattern ]] \
+    || fail "render in jj dir with pattern: <$pattern>, but was <$actual>"
+}
+
+test_jj_dir_added_file_status() {
+  # Prepare the environment
+  touch new_file
+  jj file track new_file
+
+  local pattern='%{%B%}via %{%b%}%{%B%F{white}%}%{%B%F{yellow}%}🥋 [a-z0-9]{8} \(Init\)%{%b%f%}%{%B%F{red}%} \[\+\]%{%b%f%}%{%b%f%}%{%B%} %{%b%}'
+  local actual="$(spaceship::testkit::render_prompt)"
+
+  [[ "$actual" =~ $pattern ]] \
+    || fail "render in jj dir with pattern: <$pattern>, but was <$actual>"
+
 }
 
 # ------------------------------------------------------------------------------
