@@ -75,7 +75,7 @@ github = "lucean/spaceship-jj"
 
 If none of the above methods works for you, you can install Spaceship manually.
 
-1. Clone this repo somewhere, for example to `$HOME/.zsh/spaceship-section`.
+1. Clone this repo somewhere, for example to `$HOME/.zsh/spaceship-jj`.
 2. Source this section in your `~/.zshrc`.
 
 ### Example
@@ -93,7 +93,7 @@ source "~/.zsh/spaceship-jj/spaceship-jj.plugin.zsh"
 
 ## Usage
 
-After installing, add the following line to your `.zshrc` in order to include jj section in the prompt:
+After installing, add the following line to your `.zshrc` in order to include jj in the prompt:
 
 ```zsh
 spaceship add jj
@@ -102,19 +102,14 @@ spaceship add jj
 ### Suppressing the Git section when using `jj`
 
 Spaceship’s `git` section is enabled by default. Because `jj` repositories are usually backed by git repositories internally, the git prompt will still appear alongside the `jj` prompt.
-This can be resovled by setting `SPACESHIP_SHOW_GIT=false` in any repositories where `jj` is being used.
+This can be resolved by setting `SPACESHIP_SHOW_GIT=false` in any repositories where `jj` is being used.
 One way to do this is to use **direnv** to disable the git section automatically when entering those directories.
 
 * Install `direnv`:
 
   ```bash
-  # macOS
+  # e.g. on macOS:
   brew install direnv
-  ```
-
-  ```bash
-  # Debain/Ubuntu
-  sudo apt install direnv
   ```
 
 * Enable the direnv hook in zsh
