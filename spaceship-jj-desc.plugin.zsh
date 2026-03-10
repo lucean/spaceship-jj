@@ -11,7 +11,7 @@
 SPACESHIP_JJ_DESC_SHOW="${SPACESHIP_JJ_DESC_SHOW=true}"
 SPACESHIP_JJ_DESC_ASYNC="${SPACESHIP_JJ_DESC_ASYNC=true}"
 SPACESHIP_JJ_DESC_PREFIX="${SPACESHIP_JJ_DESC_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
-SPACESHIP_JJ_DESC_SUFFIX="${SPACESHIP_JJ_DESC_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
+SPACESHIP_JJ_DESC_SUFFIX="${SPACESHIP_JJ_DESC_SUFFIX=""}"
 SPACESHIP_JJ_DESC_SYMBOL="${SPACESHIP_JJ_DESC_SYMBOL="🥋 "}"
 SPACESHIP_JJ_DESC_COLOR="${SPACESHIP_JJ_DESC_COLOR="yellow"}"
 
@@ -33,7 +33,7 @@ spaceship_jj_desc() {
   jj_desc="$(
     jj --at-op=@ --ignore-working-copy --no-pager \
       log -r @ --limit 1 --no-graph \
-      --template 'change_id.shortest(8) ++ if(description, " (" ++ description.first_line() ++ ")", "")' \
+      --template 'change_id.shortest(8) ++ if(description, " (" ++ description.first_line() ++ ")", " ")' \
       2>/dev/null
   )"
 
