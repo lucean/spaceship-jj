@@ -59,9 +59,9 @@ test_mocked_version() {
   # Prepare the environment
   touch $SHUNIT_TMPDIR/test.foo
 
-  local prefix="%{%B%}$SPACESHIP_FOOBAR_PREFIX%{%b%}"
-  local content="%{%B%F{$SPACESHIP_FOOBAR_COLOR}%}$SPACESHIP_FOOBAR_SYMBOL$mocked_version%{%b%f%}"
-  local suffix="%{%B%}$SPACESHIP_FOOBAR_SUFFIX%{%b%}"
+  local prefix="%{%B%}$SPACESHIP_JJ_PREFIX%{%b%}"
+  local content="%{%B%F{$SPACESHIP_JJ_COLOR}%}$SPACESHIP_JJ_SYMBOL$mocked_version%{%b%f%}"
+  local suffix="%{%B%}$SPACESHIP_JJ_SUFFIX%{%b%}"
 
   local expected="$prefix$content$suffix"
   local actual="$(spaceship::testkit::render_prompt)"

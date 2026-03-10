@@ -13,39 +13,43 @@ SPACESHIP_JJ_ASYNC="${SPACESHIP_JJ_ASYNC=true}"
 SPACESHIP_JJ_PREFIX="${SPACESHIP_JJ_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
 SPACESHIP_JJ_SUFFIX="${SPACESHIP_JJ_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
 SPACESHIP_JJ_SYMBOL="${SPACESHIP_JJ_SYMBOL="🥋 "}"
-SPACESHIP_JJ_COLOR="${SPACESHIP_JJ_COLOR="yellow"}"
+
+if [ -z "$SPACESHIP_JJ_ORDER" ]; then
+  SPACESHIP_JJ_ORDER=(jj_desc jj_status)
+fi
+
+# ------------------------------------------------------------------------------
+# Dependencies
+# ------------------------------------------------------------------------------
+
+source "$SPACESHIP_ROOT/sections/jj_desc.zsh"
+source "$SPACESHIP_ROOT/sections/jj_status.zsh"
+
+spaceship::precompile "$SPACESHIP_ROOT/sections/jj_desc.zsh"
+spaceship::precompile "$SPACESHIP_ROOT/sections/jj_status.zsh"
 
 # ------------------------------------------------------------------------------
 # Section
 # ------------------------------------------------------------------------------
 
-# Show jj status
-# spaceship_ prefix before section's name is required!
-# Otherwise this section won't be loaded.
+# Show both jj description and jj status
 spaceship_jj() {
-  # If SPACESHIP_JJ_SHOW is false, don't show jj section
   [[ $SPACESHIP_JJ_SHOW == false ]] && return
 
   # Check if jj command is available for execution
   spaceship::exists jj || return
 
-  jj root >/dev/null 2>&1 || return
+  # Refresh parts of the jj section
+  for subsection in "${SPACESHIP_JJ_ORDER[@]}"; do
+    spaceship::core::refresh_section --sync "$subsection"
+  done
 
-  local jj_info
-  jj_info="$(
-    jj --at-op=@ --ignore-working-copy --no-pager \
-      log -r @ --limit 1 --no-graph \
-      --template 'change_id.shortest(8) ++ if(description, " (" ++ description.first_line() ++ ")", "")' \
-      2>/dev/null
-  )"
-
-  [[ -z "$jj_info" ]] && return
+  local jj_data="$(spaceship::core::compose_order $SPACESHIP_JJ_ORDER)"
 
   # Display jj section
   spaceship::section::v4 \
-    --color "$SPACESHIP_JJ_COLOR" \
+    --color "white" \
     --prefix "$SPACESHIP_JJ_PREFIX" \
     --suffix "$SPACESHIP_JJ_SUFFIX" \
-    --symbol "$SPACESHIP_JJ_SYMBOL" \
-    "$jj_info"
+    "$jj_data"
 }
