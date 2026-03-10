@@ -33,7 +33,7 @@ spaceship_jj_desc() {
   jj_desc="$(
     jj --at-op=@ --ignore-working-copy --no-pager \
       log -r @ --limit 1 --no-graph \
-      --template 'change_id.shortest(8) ++ if(description, " (" ++ description.first_line() ++ ")", " ")' \
+      --template 'change_id.shortest(8) ++ if(description, " (" ++ description.first_line() ++ ")", "")' \
       2>/dev/null
   )"
 
