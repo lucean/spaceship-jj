@@ -10,9 +10,12 @@
 
 SPACESHIP_JJ_SHOW="${SPACESHIP_JJ_SHOW=true}"
 SPACESHIP_JJ_ASYNC="${SPACESHIP_JJ_ASYNC=true}"
-SPACESHIP_JJ_PREFIX="${SPACESHIP_JJ_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
-SPACESHIP_JJ_SUFFIX="${SPACESHIP_JJ_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
+SPACESHIP_JJ_PREFIX="${SPACESHIP_JJ_PREFIX="on "}"
+SPACESHIP_JJ_SUFFIX="${SPACESHIP_JJ_SUFFIX=" "}"
 SPACESHIP_JJ_SYMBOL="${SPACESHIP_JJ_SYMBOL="🥋 "}"
+
+typeset -g SPACESHIP_JJ_ROOT
+SPACESHIP_JJ_ROOT="${${(%):-%N}:A:h}"
 
 if [ -z "$SPACESHIP_JJ_ORDER" ]; then
   SPACESHIP_JJ_ORDER=(jj_desc jj_status)
@@ -22,11 +25,11 @@ fi
 # Dependencies
 # ------------------------------------------------------------------------------
 
-source "$SPACESHIP_ROOT/sections/jj_desc.zsh"
-source "$SPACESHIP_ROOT/sections/jj_status.zsh"
+source "$SPACESHIP_JJ_ROOT/spaceship-jj-desc.plugin.zsh"
+source "$SPACESHIP_JJ_ROOT/spaceship-jj-status.plugin.zsh"
 
-spaceship::precompile "$SPACESHIP_ROOT/sections/jj_desc.zsh"
-spaceship::precompile "$SPACESHIP_ROOT/sections/jj_status.zsh"
+# spaceship::precompile "$SPACESHIP_ROOT/sections/jj_desc.zsh"
+# spaceship::precompile "$SPACESHIP_ROOT/sections/jj_status.zsh"
 
 # ------------------------------------------------------------------------------
 # Section

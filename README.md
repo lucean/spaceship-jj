@@ -96,8 +96,12 @@ source "~/.zsh/spaceship-jj/spaceship-jj.plugin.zsh"
 After installing, add the following line to your `.zshrc` in order to include jj in the prompt:
 
 ```zsh
-spaceship add jj
+spaceship add --before git jj
 ```
+
+Adding the section before the `git` section ensures that the `jj` section appears in a reasonable position relative to the other sections that may be active.
+
+Alternatively, the above line can be added to `.config/spaceship.zsh`.
 
 ### Suppressing the Git section when using `jj`
 
