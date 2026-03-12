@@ -13,7 +13,7 @@ jobs:
     container: ghcr.io/spaceship-prompt/spaceship-prompt:latest
     steps:
       - name: ⬇️ Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6.0.2
 
       - name: 🖨 Print Zsh Version
         run: zsh --version
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6.0.2
 
       - name: 🚀 Release
         uses: cycjimmy/semantic-release-action@v2
