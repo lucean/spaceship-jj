@@ -31,7 +31,7 @@ git clone https://github.com/lucean/spaceship-jj.git $ZSH_CUSTOM/plugins/spacesh
 Include `spaceship-jj` in Oh-My-Zsh plugins list:
 
 ```zsh
-plugins=($plugins spaceship-jj)
+plugins=(... spaceship-jj)
 ```
 
 ### [zplug]
