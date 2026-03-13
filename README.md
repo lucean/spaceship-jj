@@ -1,7 +1,11 @@
 <h1 align="center">
-  😍 + 🚀
+  🥋 + 🚀
   <br>Spaceship JJ<br>
 </h1>
+
+[Jujutsu](https://docs.jj-vcs.dev/v0.39.0/) section for Spaceship prompt.
+
+Tested with Jujutsu v0.39.0.
 
 <h4 align="center">
   A <a href="https://www.jj-vcs.dev/latest/" target="_blank">Jujutsu</a> section for the Spaceship prompt
@@ -12,13 +16,15 @@
     <img src="https://img.shields.io/github/v/release/lucean/spaceship-jj.svg?style=flat-square"
       alt="GitHub Release" />
   </a>
+
+  <a href="https://github.com/lucean/spaceship-jj/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/lucean/spaceship-jj/ci.yaml?style=flat-square" alt="GitHub Workflow Status" />
+  </a>
 </p>
 
-<a href="https://github.com/lucean/spaceship-jj/actions">
-  <img src="https://img.shields.io/github/actions/workflow/status/lucean/spaceship-jj/ci.yaml?style=flat-square" alt="GitHub Workflow Status" />
-</a>
-
-For jj-vcs v0.39.0.
+<p align="center">
+  <img src="spaceship-jj-section.png" alt="Prompt Screenshot" />
+</p>
 
 ## Installing
 
