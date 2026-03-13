@@ -9,6 +9,7 @@
 # ------------------------------------------------------------------------------
 
 SPACESHIP_JJ_DESC_SHOW="${SPACESHIP_JJ_DESC_SHOW=true}"
+SPACESHIP_JJ_DESC_EMPTY_SHOW="${SPACESHIP_JJ_DESC_EMPTY_SHOW=false}"
 SPACESHIP_JJ_DESC_ASYNC="${SPACESHIP_JJ_DESC_ASYNC=true}"
 SPACESHIP_JJ_DESC_PREFIX="${SPACESHIP_JJ_DESC_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
 SPACESHIP_JJ_DESC_SUFFIX="${SPACESHIP_JJ_DESC_SUFFIX=""}"
@@ -37,7 +38,13 @@ spaceship_jj_desc() {
       2>/dev/null
   )"
 
+  local jj_empty=""
+  [[ -z "$(jj --no-pager diff -r @ --summary 2>/dev/null)" && $SPACESHIP_JJ_DESC_EMPTY_SHOW != false ]] \
+    && jj_empty="(empty)"
+
   [[ -z "$jj_desc" ]] && return
+
+  jj_desc+="${jj_empty:+ $jj_empty}"
 
   # Display jj desc section
   spaceship::section::v4 \
