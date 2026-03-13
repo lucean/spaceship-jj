@@ -14,6 +14,10 @@
   </a>
 </p>
 
+<a href="https://github.com/lucean/spaceship-jj/actions">
+  <img src="https://img.shields.io/github/actions/workflow/status/lucean/spaceship-jj/ci.yaml?style=flat-square" alt="GitHub Workflow Status" />
+</a>
+
 For jj-vcs v0.39.0.
 
 ## Installing
