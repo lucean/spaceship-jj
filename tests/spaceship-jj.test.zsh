@@ -51,37 +51,52 @@ test_jj_no_jj_repo() {
 
 test_jj_dir_without_desc() {
   # Prepare the environment
-  jj git init
+  jj git init >/dev/null 2>&1
 
-  local pattern='%{%B%}via %{%b%}%{%B%F{white}%}%{%B%F{yellow}%}🥋 [a-z0-9]{8}%{%b%f%}%{%b%f%}%{%B%} %{%b%}'
   local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
 
-  [[ "$actual" =~ $pattern ]] \
-    || fail "render in jj dir with pattern: <$pattern>, but was <$actual>"
+  local pattern='^on 🥋 [a-z0-9]{8} $'
+
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render in jj dir missing expected content: <$raw_section_text>"
+
+  [[ "$expanded" =~ $'\e\\[[0-9;]*33m🥋 [a-z0-9]{8}' ]] \
+    || fail "jj change id should be yellow: <$expanded>"
+
+  # Check that the prompt begins with bold 'on '
+  [[ "$expanded" =~ $'^\e\\[[0-9;]*1m(on )' ]] \
+    || fail "prompt prefix should be bold: <$expanded>"
 }
 
 test_jj_dir_with_desc() {
   # Prepare the environment
-  jj desc -m "Init" 2>&1 > /dev/null
+  jj desc -m "Init" > /dev/null 2>&1
 
-  local pattern='%{%B%}via %{%b%}%{%B%F{white}%}%{%B%F{yellow}%}🥋 [a-z0-9]{8} \(Init\)%{%b%f%}%{%b%f%}%{%B%} %{%b%}'
   local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
 
-  [[ "$actual" =~ $pattern ]] \
-    || fail "render in jj dir with pattern: <$pattern>, but was <$actual>"
+  local pattern='^on 🥋 [a-z0-9]{8} \(Init\) $'
+
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render in jj dir missing expected content: <$raw_section_text>"
 }
 
 test_jj_dir_added_file_status() {
   # Prepare the environment
   touch new_file
-  jj file track new_file
+  jj file track new_file > /dev/null 2>&1
 
-  local pattern='%{%B%}via %{%b%}%{%B%F{white}%}%{%B%F{yellow}%}🥋 [a-z0-9]{8} \(Init\)%{%b%f%}%{%B%F{red}%} \[\+\]%{%b%f%}%{%b%f%}%{%B%} %{%b%}'
   local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
 
-  [[ "$actual" =~ $pattern ]] \
-    || fail "render in jj dir with pattern: <$pattern>, but was <$actual>"
+  local pattern='^on 🥋 [a-z0-9]{8} \(Init\) \[\+\] $'
 
+  [[ "$raw_section_text" =~ $pattern ]] \
+    || fail "render in jj dir with pattern: <$pattern>, but was <$raw_section_text>"
 }
 
 # ------------------------------------------------------------------------------
