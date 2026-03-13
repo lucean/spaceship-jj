@@ -3,12 +3,9 @@
   <br>Spaceship JJ<br>
 </h1>
 
-[Jujutsu](https://docs.jj-vcs.dev/v0.39.0/) section for Spaceship prompt.
-
-Tested with Jujutsu v0.39.0.
-
 <h4 align="center">
   A <a href="https://www.jj-vcs.dev/latest/" target="_blank">Jujutsu</a> section for the Spaceship prompt
+  Tested with Jujutsu v0.39.0.
 </h4>
 
 <p align="center">
