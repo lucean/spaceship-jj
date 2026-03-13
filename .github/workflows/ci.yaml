@@ -10,16 +10,34 @@ jobs:
   main:
     name: Tests
     runs-on: ubuntu-latest
-    container: ghcr.io/spaceship-prompt/spaceship-prompt:latest
     steps:
       - name: ⬇️ Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6.0.2
+
+      - name: 💤 Install Zsh
+        run: |
+          sudo apt-get update
+          sudo apt-get install zsh shunit2 git
+
+      - name: Prepare spaceship
+        run: |
+          mkdir -p "$HOME/.zsh"
+          git clone --depth=1 https://github.com/spaceship-prompt/spaceship-prompt.git "$HOME/.zsh/spaceship"
+          shunit2bin="$(command -v shunit2)"
+          ln -s "$shunit2bin" "$HOME/.zsh/spaceship/tests/shunit2/shunit2"
 
       - name: 🖨 Print Zsh Version
-        run: zsh --version
+        run: |
+          zsh --version
+
+      - name: Install Jujutsu
+        run: |
+          wget https://github.com/jj-vcs/jj/releases/download/v0.39.0/jj-v0.39.0-x86_64-unknown-linux-musl.tar.gz
+          tar xzvf jj-v0.39.0-x86_64-unknown-linux-musl.tar.gz
+          mv jj /usr/local/bin
 
       - name: 🧪 Run Tests
-        run: ./tests/spaceship-jj.test.zsh
+        run: SPACESHIP_ROOT=~/.zsh/spaceship ./tests/spaceship-jj.test.zsh
 
   release:
     name: Release
@@ -28,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Checkout Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6.0.2
 
       - name: 🚀 Release
         uses: cycjimmy/semantic-release-action@v2
