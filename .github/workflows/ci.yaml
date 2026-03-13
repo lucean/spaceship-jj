@@ -38,22 +38,3 @@ jobs:
 
       - name: 🧪 Run Tests
         run: SPACESHIP_ROOT=~/.zsh/spaceship ./tests/spaceship-jj.test.zsh
-
-  release:
-    name: Release
-    needs: main
-    if: ${{ github.repository == 'lucean/spaceship-jj' && github.event_name == 'push' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: ⬇️ Checkout Repo
-        uses: actions/checkout@v6.0.2
-
-      - name: 🚀 Release
-        uses: cycjimmy/semantic-release-action@v2
-        with:
-          extra_plugins: |
-            @semantic-release/changelog
-            @semantic-release/git
-            semantic-release-license
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
