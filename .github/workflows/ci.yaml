@@ -17,7 +17,7 @@ jobs:
       - name: 💤 Install Zsh
         run: |
           sudo apt-get update
-          sudo apt-get install zsh
+          sudo apt-get install zsh shunit2
 
       - name: 🖨 Print Zsh Version
         run: zsh --version
