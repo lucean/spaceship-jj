@@ -28,7 +28,7 @@ jobs:
         run: zsh --version
 
       - name: 🧪 Run Tests
-        run: SPAECSHIP_ROOT=~/.zsh/spaceship ./tests/spaceship-jj.test.zsh
+        run: SPACESHIP_ROOT=~/.zsh/spaceship ./tests/spaceship-jj.test.zsh
 
   release:
     name: Release
