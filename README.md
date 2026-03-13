@@ -4,8 +4,7 @@
 </h1>
 
 <h4 align="center">
-  A <a href="https://www.jj-vcs.dev/latest/" target="_blank">Jujutsu</a> section for the Spaceship prompt
-  Tested with Jujutsu v0.39.0.
+  A <a href="https://www.jj-vcs.dev/latest/" target="_blank">Jujutsu</a> section for the Spaceship prompt (tested with Jujutsu v0.39.0).
 </h4>
 
 <p align="center">
