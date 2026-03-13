@@ -10,10 +10,14 @@ jobs:
   main:
     name: Tests
     runs-on: ubuntu-latest
-    container: ghcr.io/spaceship-prompt/spaceship-prompt:latest
     steps:
       - name: ⬇️ Checkout Repo
         uses: actions/checkout@v6.0.2
+
+      - name: 💤 Install Zsh
+        run: |
+          sudo apt-get update
+          sudo apt-get install zsh
 
       - name: 🖨 Print Zsh Version
         run: zsh --version
