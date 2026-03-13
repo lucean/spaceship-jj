@@ -23,9 +23,12 @@ jobs:
         run: |
           mkdir -p "$HOME/.zsh"
           git clone --depth=1 https://github.com/spaceship-prompt/spaceship-prompt.git "$HOME/.zsh/spaceship"
+          shunit2bin="$(command -v shunit2)"
+          ln -s "$shunit2bin" "$HOME/.zsh.spaceship/tests/shunit2/shunit2"
 
       - name: 🖨 Print Zsh Version
-        run: zsh --version
+        run: |
+          zsh --version
 
       - name: 🧪 Run Tests
         run: SPACESHIP_ROOT=~/.zsh/spaceship ./tests/spaceship-jj.test.zsh
