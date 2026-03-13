@@ -17,7 +17,12 @@ jobs:
       - name: 💤 Install Zsh
         run: |
           sudo apt-get update
-          sudo apt-get install zsh shunit2
+          sudo apt-get install zsh shunit2 git
+
+      - name: Prepare spaceship
+        run: |
+          mkdir -p "$HOME/.zsh"
+          git clone --depth=1 https://github.com/spaceship-prompt/spaceship-prompt.git "$HOME/.zsh/spaceship"
 
       - name: 🖨 Print Zsh Version
         run: zsh --version
