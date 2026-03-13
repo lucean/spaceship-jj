@@ -99,6 +99,33 @@ test_jj_dir_added_file_status() {
     || fail "render in jj dir with pattern: <$pattern>, but was <$raw_section_text>"
 }
 
+test_jj_dir_with_empty_msg() {
+  # Prepare the environment
+  export SPACESHIP_JJ_DESC_EMPTY_SHOW=true
+  rm new_file
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  local pattern='^on 🥋 [a-z0-9]{8} \(Init\) \(empty\) $'
+
+  [[ "$raw_section_text" =~ $pattern ]] \
+    || fail "render in jj dir with pattern: <$pattern>, but was <$raw_section_text>"
+
+  # The '(empty)' message disappears if you add a file to the working copy
+  touch new_file
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  local pattern='^on 🥋 [a-z0-9]{8} \(Init\) \[\+\] $'
+
+  [[ "$raw_section_text" =~ $pattern ]] \
+    || fail "render in jj dir with pattern: <$pattern>, but was <$raw_section_text>"
+}
+
 # ------------------------------------------------------------------------------
 # SHUNIT2
 # Run tests with shunit2
