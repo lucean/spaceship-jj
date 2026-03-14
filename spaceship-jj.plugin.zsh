@@ -18,7 +18,7 @@ typeset -g SPACESHIP_JJ_ROOT
 SPACESHIP_JJ_ROOT="${${(%):-%N}:A:h}"
 
 if [ -z "$SPACESHIP_JJ_ORDER" ]; then
-  SPACESHIP_JJ_ORDER=(jj_desc jj_status)
+  SPACESHIP_JJ_ORDER=(jj_desc jj_commit jj_status)
 fi
 
 # ------------------------------------------------------------------------------
@@ -26,10 +26,8 @@ fi
 # ------------------------------------------------------------------------------
 
 source "$SPACESHIP_JJ_ROOT/spaceship-jj-desc.plugin.zsh"
+source "$SPACESHIP_JJ_ROOT/spaceship-jj-commit.plugin.zsh"
 source "$SPACESHIP_JJ_ROOT/spaceship-jj-status.plugin.zsh"
-
-# spaceship::precompile "$SPACESHIP_ROOT/sections/jj_desc.zsh"
-# spaceship::precompile "$SPACESHIP_ROOT/sections/jj_status.zsh"
 
 # ------------------------------------------------------------------------------
 # Section
