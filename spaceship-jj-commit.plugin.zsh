@@ -1,18 +1,17 @@
 #
-# jj
+# spaceship-jj
 #
-# jj is a supa-dupa cool tool for making you development easier.
-# Link: https://www.jj.xyz
+# A Jujutsu section for Spaceship prompt
+# Link: https://github.com/lucean/spaceship-jj
 
 # ------------------------------------------------------------------------------
 # Configuration
 # ------------------------------------------------------------------------------
 
 SPACESHIP_JJ_COMMIT_SHOW="${SPACESHIP_JJ_COMMIT_SHOW=false}"
-SPACESHIP_JJ_COMMIT_SHOW_ID="${SPACESHIP_JJ_COMMIT_SHOW_COMMIT_ID=false}"
 SPACESHIP_JJ_COMMIT_ASYNC="${SPACESHIP_JJ_COMMIT_ASYNC=true}"
-SPACESHIP_JJ_COMMIT_PREFIX="${SPACESHIP_JJ_COMMIT_PREFIX=" "}"
-SPACESHIP_JJ_COMMIT_SUFFIX="${SPACESHIP_JJ_COMMIT_SUFFIX=""}"
+SPACESHIP_JJ_COMMIT_PREFIX="${SPACESHIP_JJ_COMMIT_PREFIX=""}"
+SPACESHIP_JJ_COMMIT_SUFFIX="${SPACESHIP_JJ_COMMIT_SUFFIX=" "}"
 SPACESHIP_JJ_COMMIT_SYMBOL="${SPACESHIP_JJ_COMMIT_SYMBOL=""}"
 SPACESHIP_JJ_COMMIT_COLOR="${SPACESHIP_JJ_COMMIT_COLOR="magenta"}"
 

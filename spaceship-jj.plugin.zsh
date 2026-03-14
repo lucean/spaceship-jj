@@ -1,8 +1,8 @@
 #
-# jj
+# spaceship-jj
 #
-# jj is a supa-dupa cool tool for making you development easier.
-# Link: https://www.jj.xyz
+# A Jujutsu section for Spaceship prompt
+# Link: https://github.com/lucean/spaceship-jj
 
 # ------------------------------------------------------------------------------
 # Configuration
@@ -11,7 +11,7 @@
 SPACESHIP_JJ_SHOW="${SPACESHIP_JJ_SHOW=true}"
 SPACESHIP_JJ_ASYNC="${SPACESHIP_JJ_ASYNC=true}"
 SPACESHIP_JJ_PREFIX="${SPACESHIP_JJ_PREFIX="on "}"
-SPACESHIP_JJ_SUFFIX="${SPACESHIP_JJ_SUFFIX=" "}"
+SPACESHIP_JJ_SUFFIX="${SPACESHIP_JJ_SUFFIX=""}"
 SPACESHIP_JJ_SYMBOL="${SPACESHIP_JJ_SYMBOL="🥋 "}"
 
 typeset -g SPACESHIP_JJ_ROOT
@@ -45,12 +45,13 @@ spaceship_jj() {
     spaceship::core::refresh_section --sync "$subsection"
   done
 
-  local jj_data="$(spaceship::core::compose_order $SPACESHIP_JJ_ORDER)"
+  local jj_section="$(spaceship::core::compose_order $SPACESHIP_JJ_ORDER)"
 
   # Display jj section
   spaceship::section::v4 \
     --color "white" \
     --prefix "$SPACESHIP_JJ_PREFIX" \
     --suffix "$SPACESHIP_JJ_SUFFIX" \
-    "$jj_data"
+    --symbol "$SPACESHIP_JJ_SYMBOL" \
+    "$jj_section"
 }
