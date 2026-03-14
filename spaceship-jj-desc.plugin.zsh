@@ -9,7 +9,10 @@
 # ------------------------------------------------------------------------------
 
 SPACESHIP_JJ_DESC_SHOW="${SPACESHIP_JJ_DESC_SHOW=true}"
-SPACESHIP_JJ_DESC_EMPTY_SHOW="${SPACESHIP_JJ_DESC_EMPTY_SHOW=false}"
+SPACESHIP_JJ_DESC_SHOW_EMPTY="${SPACESHIP_JJ_DESC_SHOW_EMPTY=false}"
+SPACESHIP_JJ_DESC_SHOW_COMMIT_ID="${SPACESHIP_JJ_DESC_SHOW_COMMIT_ID=false}"
+SPACESHIP_JJ_DESC_SHOW_BOOKMARK="${SPACESHIP_JJ_DESC_SHOW_BOOKMARK}"
+SPACESHIP_JJ_DESC_SHOW_BOOKMARK_DISTANCE="${SPACESHIP_JJ_DESC_SHOW_BOOKMARK_DISTANCE}"
 SPACESHIP_JJ_DESC_ASYNC="${SPACESHIP_JJ_DESC_ASYNC=true}"
 SPACESHIP_JJ_DESC_PREFIX="${SPACESHIP_JJ_DESC_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
 SPACESHIP_JJ_DESC_SUFFIX="${SPACESHIP_JJ_DESC_SUFFIX=""}"
@@ -39,11 +42,13 @@ spaceship_jj_desc() {
   )"
 
   local jj_empty=""
-  [[ -z "$(jj --no-pager diff -r @ --summary 2>/dev/null)" && $SPACESHIP_JJ_DESC_EMPTY_SHOW != false ]] \
+  [[ -z "$(jj --no-pager diff -r @ --summary 2>/dev/null)" && $SPACESHIP_JJ_DESC_SHOW_EMPTY != false ]] \
     && jj_empty="(empty)"
 
+  # The jj_desc content is mandatory
   [[ -z "$jj_desc" ]] && return
 
+  # Collect the active parts into the full description line
   jj_desc+="${jj_empty:+ $jj_empty}"
 
   # Display jj desc section
