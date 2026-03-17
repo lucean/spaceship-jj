@@ -18,8 +18,20 @@ typeset -g SPACESHIP_JJ_ROOT
 SPACESHIP_JJ_ROOT="${${(%):-%N}:A:h}"
 
 if [ -z "$SPACESHIP_JJ_ORDER" ]; then
-  SPACESHIP_JJ_ORDER=(jj_desc jj_commit jj_status)
+  SPACESHIP_JJ_ORDER=(jj_desc jj_commit jj_bookmark jj_status)
 fi
+
+# ------------------------------------------------------------------------------
+# Helpers
+# ------------------------------------------------------------------------------
+
+spaceship_jj::run() {
+  jj --at-op=@ --no-pager "$@" 2>/dev/null
+}
+
+spaceship_jj::log() {
+  spaceship_jj::run log -r "$1" -T "$2" -G
+}
 
 # ------------------------------------------------------------------------------
 # Dependencies
@@ -27,6 +39,7 @@ fi
 
 source "$SPACESHIP_JJ_ROOT/spaceship-jj-desc.plugin.zsh"
 source "$SPACESHIP_JJ_ROOT/spaceship-jj-commit.plugin.zsh"
+source "$SPACESHIP_JJ_ROOT/spaceship-jj-bookmark.plugin.zsh"
 source "$SPACESHIP_JJ_ROOT/spaceship-jj-status.plugin.zsh"
 
 # ------------------------------------------------------------------------------

@@ -18,53 +18,24 @@ SPACESHIP_JJ_STATUS_COLOR="${SPACESHIP_JJ_STATUS_COLOR="red"}"
 SPACESHIP_JJ_STATUS_PREFIX="${SPACESHIP_JJ_STATUS_PREFIX=""}"
 SPACESHIP_JJ_STATUS_SUFFIX="${SPACESHIP_JJ_STATUS_SUFFIX=" "}"
 
-SPACESHIP_JJ_STATUS_IGNORE_WORKING_COPY="${SPACESHIP_JJ_STATUS_IGNORE_WORKING_COPY=false}"
-
-# ------------------------------------------------------------------------------
-# Helper functions
-# ------------------------------------------------------------------------------
-spaceship_jj::status::run() {
-  local -a args
-  args=(--no-pager)
-
-  if [[ "$SPACESHIP_JJ_STATUS_IGNORE_WORKING_COPY" == true ]]; then
-    args+=(--ignore-working-copy --at-op=@)
-  fi
-
-  jj "${args[@]}" "$@" 2>/dev/null
-}
-
-spaceship_jj::status::is_repo() {
-  spaceship::exists jj || return 1
-  jj root >/dev/null 2>&1
-}
-
 # Returns a flat string of status chars for the working-copy commit, e.g. "MADR"
 # Valid chars from jj are M, A, D, C, R.
 spaceship_jj::status::chars() {
-  spaceship_jj::status::run log \
-    -r @ \
-    --limit 1 \
-    --no-graph \
-    --template 'self.diff().files().map(|f| f.status_char()).join("")'
+  spaceship_jj::log @ 'self.diff().files().map(|f| f.status_char()).join("")'
 }
 
 # Returns "1" if the working-copy commit contains conflicts, otherwise empty.
 spaceship_jj::status::conflicted() {
-  spaceship_jj::status::run log \
-    -r @ \
-    --limit 1 \
-    --no-graph \
-    --template 'if(self.conflict(), "1", "")'
+  spaceship_jj::log @ 'if(self.conflict(), "1", "")'
 }
 
 # ------------------------------------------------------------------------------
 # Section
 # ------------------------------------------------------------------------------
 
+# Show jj status
 spaceship_jj_status() {
   [[ $SPACESHIP_JJ_STATUS_SHOW == false ]] && return
-  spaceship_jj::status::is_repo || return
 
   local chars conflicted jj_status=""
   chars="$(spaceship_jj::status::chars)"
