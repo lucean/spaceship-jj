@@ -23,8 +23,10 @@ run_test_file() {
   return $exit_code
 }
 
-run_test_file "spaceship-jj Description" $CWD/spaceship-jj-desc.test.zsh
+run_test_file "spaceship-jj Core Plugin tests" $CWD/spaceship-jj-plugin.test.zsh
 
-run_test_file "spaceship-jj Commit" $CWD/spaceship-jj-commit.test.zsh
+run_test_file "spaceship-jj Description tests" $CWD/spaceship-jj-desc.test.zsh
 
-run_test_file "spaceship-jj Status" $CWD/spaceship-jj-status.test.zsh
+run_test_file "spaceship-jj Commit tests" $CWD/spaceship-jj-commit.test.zsh
+
+run_test_file "spaceship-jj Status tests" $CWD/spaceship-jj-status.test.zsh
