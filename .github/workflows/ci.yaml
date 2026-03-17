@@ -37,4 +37,4 @@ jobs:
           mv jj /usr/local/bin
 
       - name: 🧪 Run Tests
-        run: SPACESHIP_ROOT=~/.zsh/spaceship ./tests/spaceship-jj.test.zsh
+        run: ./tests/spaceship-jj.tests.zsh ~/.zsh/spaceship

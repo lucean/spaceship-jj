@@ -1,8 +1,8 @@
 #
-# jj
+# spaceship-jj
 #
-# jj is a supa-dupa cool tool for making you development easier.
-# Link: https://www.jj.xyz
+# A Jujutsu section for Spaceship prompt
+# Link: https://github.com/lucean/spaceship-jj
 
 # ------------------------------------------------------------------------------
 # Configuration
@@ -12,8 +12,7 @@ SPACESHIP_JJ_DESC_SHOW="${SPACESHIP_JJ_DESC_SHOW=true}"
 SPACESHIP_JJ_DESC_EMPTY_SHOW="${SPACESHIP_JJ_DESC_EMPTY_SHOW=false}"
 SPACESHIP_JJ_DESC_ASYNC="${SPACESHIP_JJ_DESC_ASYNC=true}"
 SPACESHIP_JJ_DESC_PREFIX="${SPACESHIP_JJ_DESC_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
-SPACESHIP_JJ_DESC_SUFFIX="${SPACESHIP_JJ_DESC_SUFFIX=""}"
-SPACESHIP_JJ_DESC_SYMBOL="${SPACESHIP_JJ_DESC_SYMBOL="🥋 "}"
+SPACESHIP_JJ_DESC_SUFFIX="${SPACESHIP_JJ_DESC_SUFFIX=" "}"
 SPACESHIP_JJ_DESC_COLOR="${SPACESHIP_JJ_DESC_COLOR="yellow"}"
 
 # ------------------------------------------------------------------------------
@@ -42,8 +41,10 @@ spaceship_jj_desc() {
   [[ -z "$(jj --no-pager diff -r @ --summary 2>/dev/null)" && $SPACESHIP_JJ_DESC_EMPTY_SHOW != false ]] \
     && jj_empty="(empty)"
 
+  # The jj_desc content is mandatory
   [[ -z "$jj_desc" ]] && return
 
+  # Collect the active parts into the full descr
   jj_desc+="${jj_empty:+ $jj_empty}"
 
   # Display jj desc section
@@ -51,6 +52,5 @@ spaceship_jj_desc() {
     --color "$SPACESHIP_JJ_DESC_COLOR" \
     --prefix "$SPACESHIP_JJ_DESC_PREFIX" \
     --suffix "$SPACESHIP_JJ_DESC_SUFFIX" \
-    --symbol "$SPACESHIP_JJ_DESC_SYMBOL" \
     "$jj_desc"
 }

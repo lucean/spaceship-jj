@@ -1,8 +1,8 @@
 #
-# jj
+# spaceship-jj
 #
-# jj is a supa-dupa cool tool for making you development easier.
-# Link: https://www.jj.xyz
+# A Jujutsu section for Spaceship prompt
+# Link: https://github.com/lucean/spaceship-jj
 
 # ------------------------------------------------------------------------------
 # Configuration
@@ -15,8 +15,8 @@ SPACESHIP_JJ_STATUS_DELETED="${SPACESHIP_JJ_STATUS_DELETED="✘"}"
 SPACESHIP_JJ_STATUS_COPIED="${SPACESHIP_JJ_STATUS_COPIED="⊕"}"
 SPACESHIP_JJ_STATUS_CONFLICTED="${SPACESHIP_JJ_STATUS_CONFLICTED="="}"
 SPACESHIP_JJ_STATUS_COLOR="${SPACESHIP_JJ_STATUS_COLOR="red"}"
-SPACESHIP_JJ_STATUS_PREFIX="${SPACESHIP_JJ_STATUS_PREFIX=" ["}"
-SPACESHIP_JJ_STATUS_SUFFIX="${SPACESHIP_JJ_STATUS_SUFFIX="]"}"
+SPACESHIP_JJ_STATUS_PREFIX="${SPACESHIP_JJ_STATUS_PREFIX=""}"
+SPACESHIP_JJ_STATUS_SUFFIX="${SPACESHIP_JJ_STATUS_SUFFIX=" "}"
 
 SPACESHIP_JJ_STATUS_IGNORE_WORKING_COPY="${SPACESHIP_JJ_STATUS_IGNORE_WORKING_COPY=false}"
 
@@ -81,6 +81,8 @@ spaceship_jj_status() {
 
   spaceship::section::v4 \
     --color "$SPACESHIP_JJ_STATUS_COLOR" \
-    "${SPACESHIP_JJ_STATUS_PREFIX}${jj_status}${SPACESHIP_JJ_STATUS_SUFFIX}"
+    --prefix "$SPACESHIP_JJ_STATUS_PREFIX" \
+    --suffix "$SPACESHIP_JJ_STATUS_SUFFIX" \
+    "[${jj_status}]"
 }
 
