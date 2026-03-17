@@ -40,6 +40,9 @@ spaceship_jj() {
   # Check if jj command is available for execution
   spaceship::exists jj || return
 
+  # Check if the current directory contains a jj project
+  jj root --quiet >/dev/null 2>&1 || return
+
   # Refresh parts of the jj section
   for subsection in "${SPACESHIP_JJ_ORDER[@]}"; do
     spaceship::core::refresh_section --sync "$subsection"
