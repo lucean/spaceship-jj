@@ -162,7 +162,7 @@ EOF
 
 ## Options
 
-This section is shown only in directories within a foobar context.
+This section is shown only in directories within a Jujutsu context.
 
 | Variable              |              Default               | Meaning                              |
 |:----------------------|:----------------------------------:| ------------------------------------ |
