@@ -10,6 +10,7 @@
 
 SPACESHIP_JJ_DESC_SHOW="${SPACESHIP_JJ_DESC_SHOW=true}"
 SPACESHIP_JJ_DESC_EMPTY_SHOW="${SPACESHIP_JJ_DESC_EMPTY_SHOW=false}"
+SPACESHIP_JJ_DESC_MAX_LENGTH="${SPACESHIP_JJ_DESC_MAX_LENGTH=999}"
 SPACESHIP_JJ_DESC_ASYNC="${SPACESHIP_JJ_DESC_ASYNC=true}"
 SPACESHIP_JJ_DESC_PREFIX="${SPACESHIP_JJ_DESC_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
 SPACESHIP_JJ_DESC_SUFFIX="${SPACESHIP_JJ_DESC_SUFFIX=" "}"
@@ -27,7 +28,7 @@ spaceship_jj_desc() {
   local jj_desc
   jj_desc="$(
     spaceship_jj::log @ \
-      'change_id.shortest(8) ++ if(description, " (" ++ description.first_line() ++ ")", "")'
+      "change_id.shortest(8) ++ if(description, \" (\" ++ truncate_end(${SPACESHIP_JJ_DESC_MAX_LENGTH}, description.first_line(), \"…\") ++ \")\", \"\")"
   )"
 
   local jj_empty=""
