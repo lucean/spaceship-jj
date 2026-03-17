@@ -56,8 +56,8 @@ test_spaceship_jj_added_file_status() {
 
   local pattern='^on 🥋 \[\+\] $'
 
-  [[ "$raw_section_text" =~ $pattern ]] \
-    || fail "render in jj dir with pattern: <$pattern>, but was <$raw_section_text>"
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 }
 
 test_spaceship_jj_modified_file_status() {
@@ -73,8 +73,8 @@ test_spaceship_jj_modified_file_status() {
 
   local pattern='^on 🥋 \[\!\] $'
 
-  [[ "$raw_section_text" =~ $pattern ]] \
-    || fail "render in jj dir with pattern: <$pattern>, but was <$raw_section_text>"
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 
 }
 
@@ -91,8 +91,8 @@ test_spaceship_jj_renamed_file_status() {
 
   local pattern='^on 🥋 \[\»\] $'
 
-  [[ "$raw_section_text" =~ $pattern ]] \
-    || fail "render in jj dir with pattern: <$pattern>, but was <$raw_section_text>"
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 }
 
 test_spaceship_jj_deleted_file_status() {
@@ -108,8 +108,8 @@ test_spaceship_jj_deleted_file_status() {
 
   local pattern='^on 🥋 \[\✘\] $'
 
-  [[ "$raw_section_text" =~ $pattern ]] \
-    || fail "render in jj dir with pattern: <$pattern>, but was <$raw_section_text>"
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 }
 
 test_spaceship_jj_conflicted_file_status() {
@@ -138,8 +138,8 @@ test_spaceship_jj_conflicted_file_status() {
 
   local pattern='^on 🥋 \[\=\] $'
 
-  [[ "$raw_section_text" =~ $pattern ]] \
-    || fail "render in jj dir with pattern: <$pattern>, but was <$raw_section_text>"
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 }
 
 # ------------------------------------------------------------------------------

@@ -55,19 +55,38 @@ test_spaceship_jj_show_commit() {
   local pattern='^on 🥋 [a-f0-9]{8} $'
 
   [[ "$raw_section_text" =~ "$pattern" ]] \
-    || fail "render in jj dir missing expected content: <$raw_section_text>"
+    || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 
   [[ "$expanded" =~ $'\e\\[[0-9;]*35m[a-f0-9]{8}' ]] \
-    || fail "jj change id should be magenta: <$expanded>"
+    || fail "jj  commit id should be magenta: <$expanded>"
 
   # Check that the prompt begins with bold 'on '
   [[ "$expanded" =~ $'^\e\\[[0-9;]*1m(on )' ]] \
     || fail "prompt prefix should be bold: <$expanded>"
 }
 
-test_spaceship_jj_truncate_commit() {
-  # Implement, then check if a user can specify the number of commit characters to display
-  return
+test_spaceship_jj_show_full_commit() {
+  # Prepare the environment
+  jj git init >/dev/null 2>&1
+  export SPACESHIP_JJ_DESC_SHOW=false
+  export SPACESHIP_JJ_COMMIT_SHOW=true
+  export SPACESHIP_JJ_COMMIT_FULL=true
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  local pattern='^on 🥋 [a-f0-9]{40} $'
+
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
+
+  [[ "$expanded" =~ $'\e\\[[0-9;]*35m[a-f0-9]{40}' ]] \
+    || fail "jj change id should be magenta: <$expanded>"
+
+  # Check that the prompt begins with bold 'on '
+  [[ "$expanded" =~ $'^\e\\[[0-9;]*1m(on )' ]] \
+    || fail "prompt prefix should be bold: <$expanded>"
 }
 
 # ------------------------------------------------------------------------------

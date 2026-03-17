@@ -50,7 +50,7 @@ test_spaceship_jj_no_jj_root() {
   local pattern='^$'
 
   [[ "$raw_section_text" =~ "$pattern" ]] \
-    || fail "render in jj dir missing expected content: <$raw_section_text>"
+    || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 }
 
 # ------------------------------------------------------------------------------
