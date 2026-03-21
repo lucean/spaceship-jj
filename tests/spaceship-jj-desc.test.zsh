@@ -53,7 +53,7 @@ test_spaceship_jj_no_description() {
   local pattern='^on 🥋 [k-z0-9]{8} $'
 
   [[ "$raw_section_text" =~ "$pattern" ]] \
-    || fail "render in jj dir missing expected content: <$raw_section_text>"
+    || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 
   [[ "$expanded" =~ $'\e\\[[0-9;]*33m[k-z0-9]{8}' ]] \
     || fail "jj change id should be yellow: <$expanded>"
@@ -74,7 +74,7 @@ test_spaceship_jj_description() {
   local pattern='^on 🥋 [k-z0-9]{8} \(Init\) $'
 
   [[ "$raw_section_text" =~ "$pattern" ]] \
-    || fail "render in jj dir missing expected content: <$raw_section_text>"
+    || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 }
 
 test_spaceship_jj_empty_description() {
@@ -87,8 +87,8 @@ test_spaceship_jj_empty_description() {
 
   local pattern='^on 🥋 [k-z0-9]{8} \(Init\) \(empty\) $'
 
-  [[ "$raw_section_text" =~ $pattern ]] \
-    || fail "render in jj dir with pattern: <$pattern>, but was <$raw_section_text>"
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 
   # The '(empty)' message disappears if you add a file to the working copy
   touch new_file
@@ -99,8 +99,8 @@ test_spaceship_jj_empty_description() {
 
   local pattern='^on 🥋 [k-z0-9]{8} \(Init\) \[\+\] $'
 
-  [[ "$raw_section_text" =~ $pattern ]] \
-    || fail "render in jj dir with pattern: <$pattern>, but was <$raw_section_text>"
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 }
 
 # ------------------------------------------------------------------------------

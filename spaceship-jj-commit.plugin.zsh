@@ -9,6 +9,7 @@
 # ------------------------------------------------------------------------------
 
 SPACESHIP_JJ_COMMIT_SHOW="${SPACESHIP_JJ_COMMIT_SHOW=false}"
+SPACESHIP_JJ_COMMIT_FULL="${SPACESHIP_JJ_COMMIT_FULL=false}"
 SPACESHIP_JJ_COMMIT_ASYNC="${SPACESHIP_JJ_COMMIT_ASYNC=true}"
 SPACESHIP_JJ_COMMIT_PREFIX="${SPACESHIP_JJ_COMMIT_PREFIX=""}"
 SPACESHIP_JJ_COMMIT_SUFFIX="${SPACESHIP_JJ_COMMIT_SUFFIX=" "}"
@@ -23,8 +24,12 @@ spaceship_jj_commit() {
   # If SPACESHIP_JJ_COMMIT_SHOW is false, don't show jj commit section
   [[ $SPACESHIP_JJ_COMMIT_SHOW == false ]] && return
 
-  local jj_commit
-  jj_commit="$(spaceship_jj::log @ 'commit_id.shortest(8)')"
+  local commit_id jj_commit
+  commit_id='commit_id.shortest(8)'
+
+  [[ $SPACESHIP_JJ_COMMIT_FULL == true ]] && commit_id='commit_id'
+
+  jj_commit="$(spaceship_jj::log @ "$commit_id")"
 
   # The jj_commit content is mandatory
   [[ -z "$jj_commit" ]] && return
