@@ -1,13 +1,21 @@
+### v0.1.0 (2026-03-21)
+
+* Add bookmark details to section. by @lucean in <https://github.com/lucean/spaceship-jj/pull/23>
+* Allow the full commit ID to be displayed. by @lucean in <https://github.com/lucean/spaceship-jj/pull/21>
+* Truncate description if greater than maximum permitted length by @lucean in <https://github.com/lucean/spaceship-jj/pull/22>
+
+**Full Changelog**: [v0.1.0](https://github.com/lucean/spaceship-jj/compare/v0.0.3...v0.1.0)
+
 ### v0.0.3 (2026-03-17)
 
-* Enforce a jj repo check. by @lucean in https://github.com/lucean/spaceship-jj/pull/24
+* Enforce a jj repo check. by @lucean in <https://github.com/lucean/spaceship-jj/pull/24>
 
 **Full Changelog**: [v0.0.3](https://github.com/lucean/spaceship-jj/compare/v0.0.2...v0.0.3)
 
 ### v0.0.2 (2026-03-17)
 
-* Added section to show empty working copy. by @lucean in https://github.com/lucean/spaceship-jj/pull/15
-* Add commit details to section. by @lucean in https://github.com/lucean/spaceship-jj/pull/16
+* Added section to show empty working copy. by @lucean in <https://github.com/lucean/spaceship-jj/pull/15>
+* Add commit details to section. by @lucean in <https://github.com/lucean/spaceship-jj/pull/16>
 
 **Full Changelog**: [v0.0.2](https://github.com/lucean/spaceship-jj/compare/v0.0.1...v0.0.2)
 
