@@ -103,6 +103,25 @@ test_spaceship_jj_empty_description() {
     || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 }
 
+test_spaceship_jj_truncated_description() {
+  # Prepare the environment
+  export SPACESHIP_JJ_DESC_EMPTY_SHOW=false
+  export SPACESHIP_JJ_DESC_MAX_LENGTH=10
+
+  rm new_file
+
+  jj desc -m "A much longer init message" > /dev/null 2>&1
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  local pattern='^on 🥋 [k-z0-9]{8} \(A much ...\) $'
+
+  [[ "$raw_section_text" =~ $pattern ]] \
+    || fail "render in jj dir with pattern: <$pattern>, but was <$raw_section_text>"
+}
+
 # ------------------------------------------------------------------------------
 # SHUNIT2
 # Run tests with shunit2
