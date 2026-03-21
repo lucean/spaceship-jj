@@ -22,6 +22,19 @@
   <img src="spaceship-jj-section.png" alt="Prompt Screenshot" />
 </p>
 
+## Overview
+
+The `spaceship-jj` plugin is designed as a drop-in replacement for the Spaceship `git` section for use within Jujutsu repositories.
+It currently supports displaying the following information:
+
+* current change ID.
+* description, with an option to show/hide the description if it is unset, and an option to truncate long descriptions.
+* git commit ID, truncated to the first 8 characters with an option to view the full commit ID
+* nearest bookmarked ancestor, with an indication of how far the current working copy is ahead of the nearest bookmark.
+* status flags for files in the current working copy.
+
+These individual components can be toggled on or off, as required.
+
 ## Installing
 
 You need to source this plugin somewhere in your dotfiles. Here's how to do it with some popular tools:
@@ -183,6 +196,7 @@ Shows the change ID (shortest unique prefix) and description of the working copy
 |:------------------------------|:----------------------------------:|-------------------------------------------|
 | `SPACESHIP_JJ_DESC_SHOW`      |               `true`               | Show description subsection               |
 | `SPACESHIP_JJ_DESC_EMPTY_SHOW`|              `false`               | Show `(empty)` label for empty commits    |
+| `SPACESHIP_JJ_DESC_MAX_LENGTH`|              `999`                 | Maximum length of the description         |
 | `SPACESHIP_JJ_DESC_ASYNC`     |               `true`               | Render subsection asynchronously          |
 | `SPACESHIP_JJ_DESC_PREFIX`    | `$SPACESHIP_PROMPT_DEFAULT_PREFIX` | Prefix before subsection                  |
 | `SPACESHIP_JJ_DESC_SUFFIX`    |               `" "`                | Suffix after subsection                   |
@@ -195,6 +209,7 @@ Shows the commit ID of the working copy. Hidden by default - set `SPACESHIP_JJ_C
 | Variable                       |   Default   | Meaning                              |
 |:-------------------------------|:-----------:|--------------------------------------|
 | `SPACESHIP_JJ_COMMIT_SHOW`     |   `false`   | Show commit ID subsection            |
+| `SPACESHIP_JJ_COMMIT_FULL`     |   `false`   | Show full commit ID instead of first 8 characters |
 | `SPACESHIP_JJ_COMMIT_ASYNC`    |   `true`    | Render subsection asynchronously     |
 | `SPACESHIP_JJ_COMMIT_PREFIX`   |    `""`     | Prefix before subsection             |
 | `SPACESHIP_JJ_COMMIT_SUFFIX`   |    `" "`    | Suffix after subsection              |
