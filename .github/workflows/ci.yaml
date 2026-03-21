@@ -32,8 +32,8 @@ jobs:
 
       - name: Install Jujutsu
         run: |
-          wget https://github.com/jj-vcs/jj/releases/download/v0.39.0/jj-v0.39.0-x86_64-unknown-linux-musl.tar.gz
-          tar xzvf jj-v0.39.0-x86_64-unknown-linux-musl.tar.gz
+          wget https://github.com/jj-vcs/jj/releases/download/v0.40.0/jj-v0.40.0-x86_64-unknown-linux-musl.tar.gz
+          tar xzvf jj-v0.40.0-x86_64-unknown-linux-musl.tar.gz
           mv jj /usr/local/bin
 
       - name: 🧪 Run Tests
