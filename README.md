@@ -111,7 +111,7 @@ Alternatively, the above line can be added to `.config/spaceship.zsh`.
 
 ### Suppressing the Git section when using `jj`
 
-Spaceship’s `git` section is enabled by default. Because `jj` repositories are usually backed by git repositories internally, the git prompt will still appear alongside the `jj` prompt.
+Spaceship's `git` section is enabled by default. Because `jj` repositories are usually backed by git repositories internally, the git prompt will still appear alongside the `jj` prompt.
 This can be resolved by setting `SPACESHIP_SHOW_GIT=false` in any repositories where `jj` is being used.
 One way to do this is to use **direnv** to disable the git section automatically when entering those directories.
 
@@ -164,13 +164,70 @@ EOF
 
 This section is shown only in directories within a Jujutsu context.
 
-| Variable              |              Default               | Meaning                              |
-|:----------------------|:----------------------------------:| ------------------------------------ |
-| `SPACESHIP_JJ_SHOW`   |               `true`               | Show current section                 |
-| `SPACESHIP_JJ_PREFIX` | `$SPACESHIP_PROMPT_DEFAULT_PREFIX` | Prefix before section                |
-| `SPACESHIP_JJ_SUFFIX` | `$SPACESHIP_PROMPT_DEFAULT_SUFFIX` | Suffix after section                 |
-| `SPACESHIP_JJ_SYMBOL` |                `🥋`                | Character to be shown before version |
-| `SPACESHIP_JJ_COLOR`  |              `yellow`              | Color of section                     |
+### Main section
+
+| Variable              |              Default               | Meaning                                        |
+|:----------------------|:----------------------------------:|------------------------------------------------|
+| `SPACESHIP_JJ_SHOW`   |               `true`               | Show current section                           |
+| `SPACESHIP_JJ_ASYNC`  |               `true`               | Render section asynchronously                  |
+| `SPACESHIP_JJ_PREFIX` |              `"on "`               | Prefix before section                          |
+| `SPACESHIP_JJ_SUFFIX` |               `""`                 | Suffix after section                           |
+| `SPACESHIP_JJ_SYMBOL` |               `🥋`                 | Symbol shown before the section content        |
+| `SPACESHIP_JJ_ORDER`  | `(jj_desc jj_commit jj_bookmark jj_status)` | Order and inclusion of subsections  |
+
+### Description (`jj_desc`)
+
+Shows the change ID (shortest unique prefix) and description of the working copy commit.
+
+| Variable                      |              Default               | Meaning                                   |
+|:------------------------------|:----------------------------------:|-------------------------------------------|
+| `SPACESHIP_JJ_DESC_SHOW`      |               `true`               | Show description subsection               |
+| `SPACESHIP_JJ_DESC_EMPTY_SHOW`|              `false`               | Show `(empty)` label for empty commits    |
+| `SPACESHIP_JJ_DESC_ASYNC`     |               `true`               | Render subsection asynchronously          |
+| `SPACESHIP_JJ_DESC_PREFIX`    | `$SPACESHIP_PROMPT_DEFAULT_PREFIX` | Prefix before subsection                  |
+| `SPACESHIP_JJ_DESC_SUFFIX`    |               `" "`                | Suffix after subsection                   |
+| `SPACESHIP_JJ_DESC_COLOR`     |             `"yellow"`             | Color of subsection                       |
+
+### Commit ID (`jj_commit`)
+
+Shows the commit ID of the working copy. Hidden by default - set `SPACESHIP_JJ_COMMIT_SHOW=true` to enable.
+
+| Variable                       |   Default   | Meaning                              |
+|:-------------------------------|:-----------:|--------------------------------------|
+| `SPACESHIP_JJ_COMMIT_SHOW`     |   `false`   | Show commit ID subsection            |
+| `SPACESHIP_JJ_COMMIT_ASYNC`    |   `true`    | Render subsection asynchronously     |
+| `SPACESHIP_JJ_COMMIT_PREFIX`   |    `""`     | Prefix before subsection             |
+| `SPACESHIP_JJ_COMMIT_SUFFIX`   |    `" "`    | Suffix after subsection              |
+| `SPACESHIP_JJ_COMMIT_COLOR`    | `"magenta"` | Color of subsection                  |
+
+### Bookmark (`jj_bookmark`)
+
+Shows the nearest bookmark that is an ancestor of the working copy, along with it's position relative to the working copy using jj revset notation. For example, `(main @-)` means the `main` bookmark is one commit behind the working copy. If multiple bookmarks are equidistant, the count is shown instead, e.g. `(<2 bookmarks> @-)`.
+
+| Variable                        |  Default  | Meaning                              |
+|:--------------------------------|:---------:|--------------------------------------|
+| `SPACESHIP_JJ_BOOKMARK_SHOW`    |  `true`   | Show bookmark subsection             |
+| `SPACESHIP_JJ_BOOKMARK_ASYNC`   |  `true`   | Render subsection asynchronously     |
+| `SPACESHIP_JJ_BOOKMARK_PREFIX`  |   `""`    | Prefix before subsection             |
+| `SPACESHIP_JJ_BOOKMARK_SUFFIX`  |  `" "`    | Suffix after subsection              |
+| `SPACESHIP_JJ_BOOKMARK_COLOR`   | `"blue"`  | Color of subsection                  |
+
+### Status (`jj_status`)
+
+Shows the working copy status as a string of symbols inside `[...]`. Hidden when the working copy is clean.
+
+| Variable                          |  Default  | Meaning                              |
+|:----------------------------------|:---------:|--------------------------------------|
+| `SPACESHIP_JJ_STATUS_SHOW`        |  `true`   | Show status subsection               |
+| `SPACESHIP_JJ_STATUS_COLOR`       |  `"red"`  | Color of subsection                  |
+| `SPACESHIP_JJ_STATUS_PREFIX`      |   `""`    | Prefix before subsection             |
+| `SPACESHIP_JJ_STATUS_SUFFIX`      |  `" "`    | Suffix after subsection              |
+| `SPACESHIP_JJ_STATUS_ADDED`       |   `"+"`   | Symbol for added files               |
+| `SPACESHIP_JJ_STATUS_MODIFIED`    |   `"!"`   | Symbol for modified files            |
+| `SPACESHIP_JJ_STATUS_RENAMED`     |   `"»"`   | Symbol for renamed files             |
+| `SPACESHIP_JJ_STATUS_DELETED`     |   `"✘"`   | Symbol for deleted files             |
+| `SPACESHIP_JJ_STATUS_COPIED`      |   `"⊕"`   | Symbol for copied files              |
+| `SPACESHIP_JJ_STATUS_CONFLICTED`  |   `"="`   | Symbol for conflicts                 |
 
 ## Contributing
 

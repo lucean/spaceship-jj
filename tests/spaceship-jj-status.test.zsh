@@ -130,6 +130,7 @@ test_spaceship_jj_conflicted_file_status() {
   jj new a b > /dev/null 2>&1
 
   export SPACESHIP_JJ_DESC_SHOW=false
+  export SPACESHIP_JJ_BOOKMARK_SHOW=false
 
   local actual="$(spaceship::testkit::render_prompt)"
   local expanded="$(print -P -- "$actual")"

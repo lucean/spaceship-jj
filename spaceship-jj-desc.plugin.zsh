@@ -20,25 +20,18 @@ SPACESHIP_JJ_DESC_COLOR="${SPACESHIP_JJ_DESC_COLOR="yellow"}"
 # ------------------------------------------------------------------------------
 
 # Show jj desc
-# spaceship_ prefix before section's name is required!
-# Otherwise this section won't be loaded.
 spaceship_jj_desc() {
   # If SPACESHIP_JJ_DESC_SHOW is false, don't show jj section
   [[ $SPACESHIP_JJ_DESC_SHOW == false ]] && return
 
-  # Check if jj command is available for execution
-  spaceship::exists jj || return
-
   local jj_desc
   jj_desc="$(
-    jj --at-op=@ --ignore-working-copy --no-pager \
-      log -r @ --limit 1 --no-graph \
-      --template 'change_id.shortest(8) ++ if(description, " (" ++ description.first_line() ++ ")", "")' \
-      2>/dev/null
+    spaceship_jj::log @ \
+      'change_id.shortest(8) ++ if(description, " (" ++ description.first_line() ++ ")", "")'
   )"
 
   local jj_empty=""
-  [[ -z "$(jj --no-pager diff -r @ --summary 2>/dev/null)" && $SPACESHIP_JJ_DESC_EMPTY_SHOW != false ]] \
+  [[ -z "$(spaceship_jj::run diff -r @ --summary)" && $SPACESHIP_JJ_DESC_EMPTY_SHOW != false ]] \
     && jj_empty="(empty)"
 
   # The jj_desc content is mandatory
