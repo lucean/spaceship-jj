@@ -25,6 +25,8 @@ spaceship_jj_desc() {
   # If SPACESHIP_JJ_DESC_SHOW is false, don't show jj section
   [[ $SPACESHIP_JJ_DESC_SHOW == false ]] && return
 
+  spaceship::exists jj || return
+
   local jj_desc
   jj_desc="$(
     spaceship_jj::log @ \
@@ -32,7 +34,7 @@ spaceship_jj_desc() {
   )"
 
   local jj_empty=""
-  [[ -z "$(spaceship_jj::run diff -r @ --summary)" && $SPACESHIP_JJ_DESC_EMPTY_SHOW != false ]] \
+  [[ -z "$(spaceship_jj::run diff -r @ --summary)" && $SPACESHIP_JJ_DESC_EMPTY_SHOW == true ]] \
     && jj_empty="(empty)"
 
   # The jj_desc content is mandatory

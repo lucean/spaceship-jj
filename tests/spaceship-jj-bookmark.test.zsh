@@ -58,7 +58,7 @@ test_spaceship_jj_single_bookmark_at_working_copy() {
   [[ "$raw_section_text" =~ "$pattern" ]] \
     || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 
-  [[ "$expanded" =~ $'\e\\[[0-9;]*33m[k-z0-9]{8}' ]] \
+  [[ "$expanded" =~ $'\e\\[[0-9;]*34m' ]] \
     || fail "jj bookmark should be blue: <$expanded>"
 
   # Check that the prompt begins with bold 'on '
@@ -80,7 +80,7 @@ test_spaceship_jj_single_bookmark_at_working_copy_minus_one() {
   [[ "$raw_section_text" =~ "$pattern" ]] \
     || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 
-  [[ "$expanded" =~ $'\e\\[[0-9;]*33m[k-z0-9]{8}' ]] \
+  [[ "$expanded" =~ $'\e\\[[0-9;]*34m' ]] \
     || fail "jj bookmark should be blue: <$expanded>"
 
   # Check that the prompt begins with bold 'on '
@@ -102,7 +102,7 @@ test_spaceship_jj_single_bookmark_at_working_copy_minus_two() {
   [[ "$raw_section_text" =~ "$pattern" ]] \
     || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 
-  [[ "$expanded" =~ $'\e\\[[0-9;]*33m[k-z0-9]{8}' ]] \
+  [[ "$expanded" =~ $'\e\\[[0-9;]*34m' ]] \
     || fail "jj bookmark should be blue: <$expanded>"
 
   # Check that the prompt begins with bold 'on '
@@ -124,7 +124,7 @@ test_spaceship_jj_single_bookmark_at_working_copy_minus_three() {
   [[ "$raw_section_text" =~ "$pattern" ]] \
     || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 
-  [[ "$expanded" =~ $'\e\\[[0-9;]*33m[k-z0-9]{8}' ]] \
+  [[ "$expanded" =~ $'\e\\[[0-9;]*34m' ]] \
     || fail "jj bookmark should be blue: <$expanded>"
 
   # Check that the prompt begins with bold 'on '
@@ -148,12 +148,48 @@ test_spaceship_jj_multiple_bookmarks() {
   [[ "$raw_section_text" =~ "$pattern" ]] \
     || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 
-  [[ "$expanded" =~ $'\e\\[[0-9;]*33m[k-z0-9]{8}' ]] \
+  [[ "$expanded" =~ $'\e\\[[0-9;]*34m' ]] \
     || fail "jj bookmark should be blue: <$expanded>"
 
   # Check that the prompt begins with bold 'on '
   [[ "$expanded" =~ $'^\e\\[[0-9;]*1m(on )' ]] \
     || fail "prompt prefix should be bold: <$expanded>"
+}
+
+test_spaceship_jj_bookmark_show_false() {
+  export SPACESHIP_JJ_BOOKMARK_SHOW=false
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  # Bookmark section must not appear; only the desc change_id should show
+  local pattern='^on 🥋 [a-z0-9]{8} $'
+
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render with BOOKMARK_SHOW=false was: <$raw_section_text>, expected no bookmark"
+
+  export SPACESHIP_JJ_BOOKMARK_SHOW=true
+}
+
+test_spaceship_jj_no_bookmark() {
+  local fresh_dir
+  fresh_dir="$(mktemp -d)"
+  cd "$fresh_dir"
+  jj git init >/dev/null 2>&1
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  # No bookmarks in this repo — bookmark section must not appear
+  local pattern='^on 🥋 [a-z0-9]{8} $'
+
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render with no bookmarks was: <$raw_section_text>, expected no bookmark section"
+
+  cd "$SHUNIT_TMPDIR"
+  rm -rf "$fresh_dir"
 }
 
 # ------------------------------------------------------------------------------

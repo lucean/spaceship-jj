@@ -24,6 +24,8 @@ spaceship_jj_commit() {
   # If SPACESHIP_JJ_COMMIT_SHOW is false, don't show jj commit section
   [[ $SPACESHIP_JJ_COMMIT_SHOW == false ]] && return
 
+  spaceship::exists jj || return
+
   local commit_id jj_commit
   commit_id='commit_id.shortest(8)'
 

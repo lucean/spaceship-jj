@@ -142,6 +142,28 @@ test_spaceship_jj_conflicted_file_status() {
     || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 }
 
+test_spaceship_jj_status_show_false() {
+  # Start a clean working copy so there are trackable file changes
+  jj new > /dev/null 2>&1
+  touch status_show_false_file
+  jj file track status_show_false_file > /dev/null 2>&1
+
+  # SPACESHIP_JJ_DESC_SHOW and SPACESHIP_JJ_BOOKMARK_SHOW are still false from the previous test
+  export SPACESHIP_JJ_STATUS_SHOW=false
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  # Status section must not appear even though there is an added file
+  local pattern='^on 🥋 $'
+
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render with STATUS_SHOW=false was: <$raw_section_text>, expected no status section"
+
+  unset SPACESHIP_JJ_STATUS_SHOW
+}
+
 # ------------------------------------------------------------------------------
 # SHUNIT2
 # Run tests with shunit2

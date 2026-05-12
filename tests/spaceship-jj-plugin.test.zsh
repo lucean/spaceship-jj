@@ -53,6 +53,22 @@ test_spaceship_jj_no_jj_root() {
     || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
 }
 
+test_spaceship_jj_show_false() {
+  jj git init >/dev/null 2>&1
+  export SPACESHIP_JJ_SHOW=false
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  local pattern='^$'
+
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render with JJ_SHOW=false was: <$raw_section_text>, expected empty prompt"
+
+  export SPACESHIP_JJ_SHOW=true
+}
+
 # ------------------------------------------------------------------------------
 # SHUNIT2
 # Run tests with shunit2

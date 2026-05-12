@@ -30,7 +30,7 @@ spaceship_jj::run() {
 }
 
 spaceship_jj::log() {
-  spaceship_jj::run log -r "$1" -T "$2" -G
+  spaceship_jj::run log --no-graph -r "$1" -T "$2"
 }
 
 # ------------------------------------------------------------------------------

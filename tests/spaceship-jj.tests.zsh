@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-set -euo pipefail
+set -uo pipefail
 
 export SPACESHIP_ROOT="${1:-$SPACESHIP_ROOT}"
 
@@ -8,7 +8,8 @@ export CWD="${${(%):-%x}:A:h}"
 run_test_file() {
   local label="$1"
   local script="$2"
-  local output status
+  local output
+  local exit_code
 
   print
   print "== $label =="
@@ -23,10 +24,16 @@ run_test_file() {
   return $exit_code
 }
 
-run_test_file "spaceship-jj Core Plugin tests" $CWD/spaceship-jj-plugin.test.zsh
+local overall_exit=0
 
-run_test_file "spaceship-jj Description tests" $CWD/spaceship-jj-desc.test.zsh
+run_test_file "spaceship-jj Core Plugin tests" $CWD/spaceship-jj-plugin.test.zsh   || overall_exit=$?
 
-run_test_file "spaceship-jj Commit tests" $CWD/spaceship-jj-commit.test.zsh
+run_test_file "spaceship-jj Description tests" $CWD/spaceship-jj-desc.test.zsh     || overall_exit=$?
 
-run_test_file "spaceship-jj Status tests" $CWD/spaceship-jj-status.test.zsh
+run_test_file "spaceship-jj Commit tests"      $CWD/spaceship-jj-commit.test.zsh   || overall_exit=$?
+
+run_test_file "spaceship-jj Status tests"      $CWD/spaceship-jj-status.test.zsh   || overall_exit=$?
+
+run_test_file "spaceship-jj Bookmark tests"    $CWD/spaceship-jj-bookmark.test.zsh || overall_exit=$?
+
+exit $overall_exit
