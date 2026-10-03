@@ -96,6 +96,51 @@ test_spaceship_jj_snapshot_false() {
     || fail "render with JJ_SNAPSHOT=true was: <$raw_section_text>, expected pattern match: <$pattern>"
 }
 
+test_spaceship_jj_ignores_color_config() {
+  local config_file="$(mktemp)"
+  print '[ui]\ncolor = "always"' > "$config_file"
+
+  local actual="$(JJ_CONFIG="$config_file" spaceship::testkit::render_prompt)"
+
+  # The prompt escapes are not expanded here, so any escape codes are from jj
+  [[ "$actual" != *$'\e'* ]] \
+    || fail "render with ui.color=always contained escape codes: <$actual>"
+
+  rm -f "$config_file"
+}
+
+test_spaceship_jj_error() {
+  local broken_dir
+  broken_dir="$(mktemp -d)"
+  cd "$broken_dir"
+  mkdir .jj
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  local pattern='^on 🥋 \? $'
+
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render in broken jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
+
+  export SPACESHIP_JJ_ERROR=""
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  local pattern='^$'
+
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render with JJ_ERROR unset was: <$raw_section_text>, expected empty prompt"
+
+  export SPACESHIP_JJ_ERROR="?"
+
+  cd "$SHUNIT_TMPDIR"
+  rm -rf "$broken_dir"
+}
+
 # ------------------------------------------------------------------------------
 # SHUNIT2
 # Run tests with shunit2

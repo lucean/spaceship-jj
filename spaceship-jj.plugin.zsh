@@ -14,6 +14,7 @@ SPACESHIP_JJ_PREFIX="${SPACESHIP_JJ_PREFIX="on "}"
 SPACESHIP_JJ_SUFFIX="${SPACESHIP_JJ_SUFFIX=""}"
 SPACESHIP_JJ_SYMBOL="${SPACESHIP_JJ_SYMBOL="🥋 "}"
 SPACESHIP_JJ_SNAPSHOT="${SPACESHIP_JJ_SNAPSHOT=true}"
+SPACESHIP_JJ_ERROR="${SPACESHIP_JJ_ERROR="?"}"
 
 typeset -g SPACESHIP_JJ_ROOT
 SPACESHIP_JJ_ROOT="${${(%):-%N}:A:h}"
@@ -37,18 +38,15 @@ spaceship_jj::log() {
   spaceship_jj::run log --no-graph -r "$1" -T "$2"
 }
 
-# Escape repo-derived text so that it is rendered literally by the prompt,
-# rather than being subjected to prompt, parameter or command expansion.
+# Escape repo-derived text so that it is rendered literally by the prompt.
 spaceship_jj::escape() {
-  # Special characters are replaced with a `${(#):-<code>}` expansion, which
-  # yields the literal character. Backslash escapes can't be used here, as they
-  # are consumed by the `echo` calls that Spaceship uses to compose sections.
+  # Percent signs would otherwise be treated as prompt escapes. Backslashes
+  # would otherwise be consumed by the `echo` calls that Spaceship uses to
+  # compose sections, so each is followed by an empty `%{%}` sequence, which
+  # stops it from forming an escape sequence and disappears on rendering.
   local text="$1"
-  local dollar='${(#):-36}' backslash='${(#):-92}' backtick='${(#):-96}'
-  text="${text//\$/$dollar}"
-  text="${text//\\/$backslash}"
-  text="${text//\`/$backtick}"
   text="${text//\%/%%}"
+  text="${text//\\/\\%{%\}}"
   print -rn -- "$text"
 }
 
@@ -67,18 +65,21 @@ spaceship_jj::in_workspace() {
 # The results are stored in the spaceship_jj_data associative array, which must
 # be declared by the caller.
 spaceship_jj::fetch() {
+  spaceship_jj::in_workspace || return 1
+
   local commit_id='commit_id.shortest(8)'
   [[ $SPACESHIP_JJ_COMMIT_FULL == true ]] && commit_id='commit_id'
 
   local max_length="$SPACESHIP_JJ_DESC_MAX_LENGTH"
   [[ "$max_length" == <-> ]] || max_length=999
 
-  # A "W" line holds the details of the working copy, followed by a "B" line
-  # for each bookmarked commit or a "C" line for each other commit, between
-  # the nearest bookmarked ancestors and the working copy.
+  # A "W" line holds the details of the working copy. An "N" line holds the
+  # parents and bookmarks of each commit between the nearest bookmarked
+  # ancestors and the working copy.
   local template='
     if(current_working_copy,
-      "W\t" ++ change_id.shortest(8)
+      "W\t" ++ commit_id
+        ++ "\t" ++ change_id.shortest(8)
         ++ "\t" ++ '"$commit_id"'
         ++ "\t" ++ if(empty, "1", "0")
         ++ "\t" ++ if(conflict, "1", "0")
@@ -86,50 +87,71 @@ spaceship_jj::fetch() {
         ++ "\t" ++ if(description, truncate_end('"$max_length"', description.first_line(), "…"))
         ++ "\n"
     ) ++
-    if(local_bookmarks,
-      "B\t" ++ commit_id ++ local_bookmarks.map(|b| "\t" ++ b.name()).join(""),
-      "C"
-    ) ++ "\n"'
+    "N\t" ++ commit_id
+      ++ "\t" ++ parents.map(|p| p.commit_id()).join(",")
+      ++ local_bookmarks.map(|b| "\t" ++ b.name() ++ if(b.conflict(), "??")).join("")
+      ++ "\n"'
 
   local output
   output="$(spaceship_jj::log '@ | heads(::@ & bookmarks())::@' "$template")"
 
   [[ -z "$output" ]] && return 1
 
-  local line distance=0
-  local -a fields bookmarks bookmark_heads
+  local line working_copy=""
+  local -a fields
+  local -A commit_parents commit_bookmarks
 
   for line in "${(@f)output}"; do
     fields=("${(@ps:\t:)line}")
 
     case "${fields[1]}" in
       W)
-        spaceship_jj_data[change_id]="${fields[2]}"
-        spaceship_jj_data[commit_id]="${fields[3]}"
-        spaceship_jj_data[empty]="${fields[4]}"
-        spaceship_jj_data[conflict]="${fields[5]}"
-        spaceship_jj_data[status]="${fields[6]}"
-        spaceship_jj_data[desc]="${(pj:\t:)fields[7,-1]}"
+        working_copy="${fields[2]}"
+        spaceship_jj_data[change_id]="${fields[3]}"
+        spaceship_jj_data[commit_id]="${fields[4]}"
+        spaceship_jj_data[empty]="${fields[5]}"
+        spaceship_jj_data[conflict]="${fields[6]}"
+        spaceship_jj_data[status]="${fields[7]}"
+        spaceship_jj_data[desc]="${(pj:\t:)fields[8,-1]}"
         ;;
-      B)
-        (( distance++ ))
-        bookmark_heads+=("${fields[2]}")
-        bookmarks+=("${(@)fields[3,-1]}")
-        ;;
-      C)
-        (( distance++ ))
+      N)
+        commit_parents[${fields[2]}]="${fields[3]}"
+        (( ${#fields} > 3 )) && commit_bookmarks[${fields[2]}]="${(pj:\n:)fields[4,-1]}"
         ;;
     esac
   done
 
-  [[ -z "${spaceship_jj_data[change_id]}" ]] && return 1
+  [[ -z "$working_copy" ]] && return 1
 
-  # When there are several bookmarked heads, measure the distance from the
-  # first of them, as the combined log covers the ancestry of them all.
-  if (( ${#bookmark_heads} > 1 )); then
-    output="$(spaceship_jj::log "::@ & ${bookmark_heads[1]}::" '"x\n"')"
-    distance=${#${(@f)output}}
-  fi
+  # Walk back from the working copy, one generation at a time, until reaching
+  # the nearest bookmarks. The distance is then the length of the shortest
+  # path to them, however many other commits have been merged in along the way.
+  local id parent distance=0
+  local -a frontier=("$working_copy") next bookmarks
+  local -A seen
+
+  while (( ${#frontier} )); do
+    (( distance++ ))
+    next=()
+
+    for id in "${frontier[@]}"; do
+      [[ -n "${commit_bookmarks[$id]}" ]] && bookmarks+=("${(@f)commit_bookmarks[$id]}")
+
+      for parent in "${(@s:,:)commit_parents[$id]}"; do
+        [[ -n "$parent" ]] || continue
+        (( ${+commit_parents[$parent]} )) || continue
+        (( ${+seen[$parent]} )) && continue
+        seen[$parent]=1
+        next+=("$parent")
+      done
+    done
+
+    (( ${#bookmarks} )) && break
+    frontier=("${next[@]}")
+  done
+
+  # A conflicted bookmark can be present on several commits
+  bookmarks=("${(@u)bookmarks}")
 
   spaceship_jj_data[bookmark]="${bookmarks[1]}"
   spaceship_jj_data[bookmark_count]=${#bookmarks}
@@ -163,7 +185,18 @@ spaceship_jj() {
 
   # Collect the details shared by the subsections
   local -A spaceship_jj_data
-  spaceship_jj::fetch || return
+  if ! spaceship_jj::fetch; then
+    # Indicate that jj failed, rather than silently hiding the section
+    [[ -z "$SPACESHIP_JJ_ERROR" ]] && return
+
+    spaceship::section::v4 \
+      --color "red" \
+      --prefix "$SPACESHIP_JJ_PREFIX" \
+      --suffix "$SPACESHIP_JJ_SUFFIX" \
+      --symbol "$SPACESHIP_JJ_SYMBOL" \
+      "$(spaceship_jj::escape "$SPACESHIP_JJ_ERROR") "
+    return
+  fi
 
   # Refresh parts of the jj section
   local subsection

@@ -107,7 +107,7 @@ git clone --depth=1 https://github.com/lucean/spaceship-jj.git "$HOME/.zsh/space
 For initializing prompt system add this to your `.zshrc`:
 
 ```zsh title=".zshrc"
-source "~/.zsh/spaceship-jj/spaceship-jj.plugin.zsh"
+source "$HOME/.zsh/spaceship-jj/spaceship-jj.plugin.zsh"
 ```
 
 ## Usage
@@ -125,7 +125,7 @@ Alternatively, the above line can be added to `.config/spaceship.zsh`.
 ### Suppressing the Git section when using `jj`
 
 Spaceship's `git` section is enabled by default. Because `jj` repositories are usually backed by git repositories internally, the git prompt will still appear alongside the `jj` prompt.
-This can be resolved by setting `SPACESHIP_SHOW_GIT=false` in any repositories where `jj` is being used.
+This can be resolved by setting `SPACESHIP_GIT_SHOW=false` in any repositories where `jj` is being used.
 One way to do this is to use **direnv** to disable the git section automatically when entering those directories.
 
 * Install `direnv`:
@@ -188,6 +188,7 @@ This section is shown only in directories within a Jujutsu context.
 | `SPACESHIP_JJ_SYMBOL` |               `🥋`                 | Symbol shown before the section content        |
 | `SPACESHIP_JJ_ORDER`  | `(jj_desc jj_commit jj_bookmark jj_status)` | Order and inclusion of subsections  |
 | `SPACESHIP_JJ_SNAPSHOT` |             `true`               | Snapshot the working copy when rendering       |
+| `SPACESHIP_JJ_ERROR`  |               `"?"`                | Text shown if `jj` fails, or `""` to hide the section |
 
 The details for all of the subsections are collected with a single `jj` invocation, and the subsections are always rendered together with the main section. As a result, `SPACESHIP_JJ_ASYNC` controls whether the whole section is rendered asynchronously, and the `*_ASYNC` options of the individual subsections have no effect.
 
@@ -222,7 +223,7 @@ Shows the commit ID of the working copy. Hidden by default - set `SPACESHIP_JJ_C
 
 ### Bookmark (`jj_bookmark`)
 
-Shows the nearest bookmark that is an ancestor of the working copy, along with it's position relative to the working copy using jj revset notation. For example, `(main @-)` means the `main` bookmark is one commit behind the working copy. If multiple bookmarks are equidistant, the count is shown instead, e.g. `(<2 bookmarks> @-)`.
+Shows the nearest bookmark that is an ancestor of the working copy, along with its position relative to the working copy using jj revset notation. For example, `(main @-)` means the `main` bookmark is one commit behind the working copy. Where the history contains merges, the position is that of the shortest path to the bookmark. If multiple bookmarks are equidistant, the count is shown instead, e.g. `(<2 bookmarks> @-)`. A conflicted bookmark is marked with `??`, as it is by `jj` itself, e.g. `(main?? @-)`.
 
 | Variable                        |  Default  | Meaning                              |
 |:--------------------------------|:---------:|--------------------------------------|
