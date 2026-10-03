@@ -29,13 +29,13 @@ spaceship_jj_status() {
 
   spaceship::exists jj || return
 
-  local status_raw jj_status=""
-  status_raw="$(spaceship_jj::log @ 'self.diff().files().map(|f| f.status_char()).join("") ++ ":" ++ if(self.conflict(), "1", "0")')"
+  # Use the details collected by the jj section, or collect them if this
+  # section is being rendered on its own
+  (( ${+spaceship_jj_data} )) || { local -A spaceship_jj_data; spaceship_jj::fetch || return }
 
-  [[ -z "$status_raw" ]] && return
-
-  local chars="${status_raw%%:*}"
-  local conflicted="${status_raw##*:}"
+  local jj_status=""
+  local chars="${spaceship_jj_data[status]}"
+  local conflicted="${spaceship_jj_data[conflict]}"
 
   [[ "$chars" == *A* ]] && jj_status+="$SPACESHIP_JJ_STATUS_ADDED"
   [[ "$chars" == *M* ]] && jj_status+="$SPACESHIP_JJ_STATUS_MODIFIED"

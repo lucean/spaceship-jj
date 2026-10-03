@@ -187,6 +187,11 @@ This section is shown only in directories within a Jujutsu context.
 | `SPACESHIP_JJ_SUFFIX` |               `""`                 | Suffix after section                           |
 | `SPACESHIP_JJ_SYMBOL` |               `🥋`                 | Symbol shown before the section content        |
 | `SPACESHIP_JJ_ORDER`  | `(jj_desc jj_commit jj_bookmark jj_status)` | Order and inclusion of subsections  |
+| `SPACESHIP_JJ_SNAPSHOT` |             `true`               | Snapshot the working copy when rendering       |
+
+The details for all of the subsections are collected with a single `jj` invocation, and the subsections are always rendered together with the main section. As a result, `SPACESHIP_JJ_ASYNC` controls whether the whole section is rendered asynchronously, and the `*_ASYNC` options of the individual subsections have no effect.
+
+By default, `jj` snapshots the working copy each time the prompt is rendered, so that the status is always up to date. In very large repositories this can be slow, in which case set `SPACESHIP_JJ_SNAPSHOT=false`; the prompt will then reflect the state as of the last `jj` command that was run.
 
 ### Description (`jj_desc`)
 

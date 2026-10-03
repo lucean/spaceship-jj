@@ -69,6 +69,33 @@ test_spaceship_jj_show_false() {
   export SPACESHIP_JJ_SHOW=true
 }
 
+test_spaceship_jj_snapshot_false() {
+  export SPACESHIP_JJ_SNAPSHOT=false
+
+  # The new file is not picked up while snapshots are disabled
+  touch unsnapshotted_file
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  local pattern='^on 🥋 [k-z0-9]{8} $'
+
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render with JJ_SNAPSHOT=false was: <$raw_section_text>, expected pattern match: <$pattern>"
+
+  export SPACESHIP_JJ_SNAPSHOT=true
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  local pattern='^on 🥋 [k-z0-9]{8} \[\+\] $'
+
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render with JJ_SNAPSHOT=true was: <$raw_section_text>, expected pattern match: <$pattern>"
+}
+
 # ------------------------------------------------------------------------------
 # SHUNIT2
 # Run tests with shunit2

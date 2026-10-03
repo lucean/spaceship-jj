@@ -26,12 +26,11 @@ spaceship_jj_commit() {
 
   spaceship::exists jj || return
 
-  local commit_id jj_commit
-  commit_id='commit_id.shortest(8)'
+  # Use the details collected by the jj section, or collect them if this
+  # section is being rendered on its own
+  (( ${+spaceship_jj_data} )) || { local -A spaceship_jj_data; spaceship_jj::fetch || return }
 
-  [[ $SPACESHIP_JJ_COMMIT_FULL == true ]] && commit_id='commit_id'
-
-  jj_commit="$(spaceship_jj::log @ "$commit_id")"
+  local jj_commit="${spaceship_jj_data[commit_id]}"
 
   # The jj_commit content is mandatory
   [[ -z "$jj_commit" ]] && return
