@@ -192,6 +192,29 @@ test_spaceship_jj_no_bookmark() {
   rm -rf "$fresh_dir"
 }
 
+test_spaceship_jj_bookmark_name_is_not_expanded() {
+  local fresh_dir
+  fresh_dir="$(mktemp -d)"
+  cd "$fresh_dir"
+  jj git init >/dev/null 2>&1
+  jj bookmark c '"$(touch${IFS}pwned)"' >/dev/null 2>&1
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  [[ ! -e pwned ]] \
+    || fail "command embedded in the bookmark name was executed"
+
+  local expected='("$(touch${IFS}pwned)" @)'
+
+  [[ "$raw_section_text" == *"$expected"* ]] \
+    || fail "render in jj dir was: <$raw_section_text>, expected literal: <$expected>"
+
+  cd "$SHUNIT_TMPDIR"
+  rm -rf "$fresh_dir"
+}
+
 # ------------------------------------------------------------------------------
 # SHUNIT2
 # Run tests with shunit2

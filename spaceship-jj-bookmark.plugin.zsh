@@ -64,7 +64,8 @@ spaceship_jj_bookmark() {
   if [[ "$jj_bookmark_count" -gt 1 ]]; then
     jj_bookmark="<${jj_bookmark_count} bookmarks> ${jj_position}"
   else
-    jj_bookmark="${jj_bookmark_name} ${jj_position}"
+    # The bookmark name is arbitrary text, so must not be expanded by the prompt
+    jj_bookmark="$(spaceship_jj::escape "$jj_bookmark_name") ${jj_position}"
   fi
 
   spaceship::section::v4 \

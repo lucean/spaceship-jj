@@ -33,6 +33,21 @@ spaceship_jj::log() {
   spaceship_jj::run log --no-graph -r "$1" -T "$2"
 }
 
+# Escape repo-derived text so that it is rendered literally by the prompt,
+# rather than being subjected to prompt, parameter or command expansion.
+spaceship_jj::escape() {
+  # Special characters are replaced with a `${(#):-<code>}` expansion, which
+  # yields the literal character. Backslash escapes can't be used here, as they
+  # are consumed by the `echo` calls that Spaceship uses to compose sections.
+  local text="$1"
+  local dollar='${(#):-36}' backslash='${(#):-92}' backtick='${(#):-96}'
+  text="${text//\$/$dollar}"
+  text="${text//\\/$backslash}"
+  text="${text//\`/$backtick}"
+  text="${text//\%/%%}"
+  print -rn -- "$text"
+}
+
 # ------------------------------------------------------------------------------
 # Dependencies
 # ------------------------------------------------------------------------------

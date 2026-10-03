@@ -40,6 +40,9 @@ spaceship_jj_desc() {
   # The jj_desc content is mandatory
   [[ -z "$jj_desc" ]] && return
 
+  # The description is arbitrary text, so must not be expanded by the prompt
+  jj_desc="$(spaceship_jj::escape "$jj_desc")"
+
   # Collect the active parts into the full descr
   jj_desc+="${jj_empty:+ $jj_empty}"
 
