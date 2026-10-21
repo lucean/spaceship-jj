@@ -1,6 +1,6 @@
-### Unreleased
+### v0.46.0 (2026-10-21)
 
-* Render descriptions and bookmark names literally, so that `%` and `\` sequences within them can no longer alter the prompt.
+* Render descriptions and bookmark names literally so that `%` and `\` sequences within them can no longer alter the prompt.
 * Collect the details for all subsections with a single `jj` invocation, and detect workspaces without running `jj`.
 * Add `SPACESHIP_JJ_SNAPSHOT` to control whether the working copy is snapshotted when rendering.
 * Mark conflicted bookmarks with `??`, and hide the bookmark rather than showing a bogus position if its distance can't be determined.
