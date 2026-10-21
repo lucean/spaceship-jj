@@ -192,6 +192,93 @@ test_spaceship_jj_no_bookmark() {
   rm -rf "$fresh_dir"
 }
 
+test_spaceship_jj_bookmark_name_is_not_expanded() {
+  local fresh_dir
+  fresh_dir="$(mktemp -d)"
+  cd "$fresh_dir"
+  jj git init >/dev/null 2>&1
+  jj bookmark c '"$(touch${IFS}pwned)"' >/dev/null 2>&1
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  # Expand the prompt escapes only, as is the case when the prompt is displayed
+  local expanded="$(setopt no_prompt_subst; print -rP -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  [[ ! -e pwned ]] \
+    || fail "command embedded in the bookmark name was executed"
+
+  local expected='("$(touch${IFS}pwned)" @)'
+
+  [[ "$raw_section_text" == *"$expected"* ]] \
+    || fail "render in jj dir was: <$raw_section_text>, expected literal: <$expected>"
+
+  cd "$SHUNIT_TMPDIR"
+  rm -rf "$fresh_dir"
+}
+
+test_spaceship_jj_conflicted_bookmark() {
+  local fresh_dir
+  fresh_dir="$(mktemp -d)"
+  cd "$fresh_dir"
+  jj git init >/dev/null 2>&1
+  jj commit -m "base" >/dev/null 2>&1
+  jj describe -m "A" >/dev/null 2>&1
+  local commit_a="$(jj log --no-graph -r @ -T commit_id 2>/dev/null)"
+  jj new @- -m "B" >/dev/null 2>&1
+  local commit_b="$(jj log --no-graph -r @ -T commit_id 2>/dev/null)"
+  jj bookmark c feat -r @- >/dev/null 2>&1
+
+  # Move the bookmark in two concurrent operations, so that it is conflicted
+  local op="$(jj op log --no-graph -n 1 -T 'id.short()' 2>/dev/null)"
+  jj bookmark set feat -r "$commit_a" --at-op="$op" >/dev/null 2>&1
+  jj bookmark set feat -r "$commit_b" --at-op="$op" >/dev/null 2>&1
+  jj new "$commit_a" "$commit_b" >/dev/null 2>&1
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  # The bookmark is on both parents, but must only be counted once
+  local pattern='^on 🥋 [a-z0-9]{8} \(feat\?\? @-\) $'
+
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
+
+  cd "$SHUNIT_TMPDIR"
+  rm -rf "$fresh_dir"
+}
+
+test_spaceship_jj_bookmark_distance_across_merge() {
+  local fresh_dir
+  fresh_dir="$(mktemp -d)"
+  cd "$fresh_dir"
+  jj git init >/dev/null 2>&1
+  jj describe -m "base" >/dev/null 2>&1
+  jj bookmark c a >/dev/null 2>&1
+
+  # A long branch and a short branch from the bookmark, which are then merged
+  jj new a -m "long 1" >/dev/null 2>&1
+  jj new -m "long 2" >/dev/null 2>&1
+  jj new -m "long 3" >/dev/null 2>&1
+  local long_branch="$(jj log --no-graph -r @ -T commit_id 2>/dev/null)"
+  jj new a -m "short 1" >/dev/null 2>&1
+  jj new @ "$long_branch" -m "merge" >/dev/null 2>&1
+  jj new >/dev/null 2>&1
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  # The shortest path is: working copy, merge, short 1, base
+  local pattern='^on 🥋 [a-z0-9]{8} \(a @-3\) $'
+
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
+
+  cd "$SHUNIT_TMPDIR"
+  rm -rf "$fresh_dir"
+}
+
 # ------------------------------------------------------------------------------
 # SHUNIT2
 # Run tests with shunit2

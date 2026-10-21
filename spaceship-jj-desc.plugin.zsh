@@ -27,18 +27,22 @@ spaceship_jj_desc() {
 
   spaceship::exists jj || return
 
-  local jj_desc
-  jj_desc="$(
-    spaceship_jj::log @ \
-      "change_id.shortest(8) ++ if(description, \" (\" ++ truncate_end(${SPACESHIP_JJ_DESC_MAX_LENGTH}, description.first_line(), \"…\") ++ \")\", \"\")"
-  )"
+  # Use the details collected by the jj section, or collect them if this
+  # section is being rendered on its own
+  (( ${+spaceship_jj_data} )) || { local -A spaceship_jj_data; spaceship_jj::fetch || return }
+
+  local jj_desc="${spaceship_jj_data[change_id]}"
+  [[ -n "${spaceship_jj_data[desc]}" ]] && jj_desc+=" (${spaceship_jj_data[desc]})"
 
   local jj_empty=""
-  [[ -z "$(spaceship_jj::run diff -r @ --summary)" && $SPACESHIP_JJ_DESC_EMPTY_SHOW == true ]] \
+  [[ $SPACESHIP_JJ_DESC_EMPTY_SHOW == true && "${spaceship_jj_data[empty]}" == "1" ]] \
     && jj_empty="(empty)"
 
   # The jj_desc content is mandatory
   [[ -z "$jj_desc" ]] && return
+
+  # The description is arbitrary text, so must not be expanded by the prompt
+  jj_desc="$(spaceship_jj::escape "$jj_desc")"
 
   # Collect the active parts into the full descr
   jj_desc+="${jj_empty:+ $jj_empty}"

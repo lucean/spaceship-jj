@@ -1,3 +1,16 @@
+### v0.46.0 (2026-10-21)
+
+* Render descriptions and bookmark names literally so that `%` and `\` sequences within them can no longer alter the prompt.
+* Collect the details for all subsections with a single `jj` invocation, and detect workspaces without running `jj`.
+* Add `SPACESHIP_JJ_SNAPSHOT` to control whether the working copy is snapshotted when rendering.
+* Mark conflicted bookmarks with `??`, and hide the bookmark rather than showing a bogus position if its distance can't be determined.
+* Ignore the user's `ui.color` setting, and fall back to the default if `SPACESHIP_JJ_DESC_MAX_LENGTH` is not a number.
+* Only check for an empty working copy when `SPACESHIP_JJ_DESC_EMPTY_SHOW` is enabled.
+* Measure the distance to the nearest bookmark along the shortest path, so that merged commits no longer inflate it.
+* Show `SPACESHIP_JJ_ERROR` (`?` by default) when `jj` fails within a workspace, rather than hiding the section.
+* Don't run `jj` outside of a workspace when a subsection is used on its own.
+* Untrack `.DS_Store` and `.idea/`.
+
 ### v0.1.0 (2026-03-21)
 
 * Add bookmark details to section. by @lucean in <https://github.com/lucean/spaceship-jj/pull/23>

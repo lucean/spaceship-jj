@@ -122,6 +122,44 @@ test_spaceship_jj_truncated_description() {
     || fail "render in jj dir with pattern: <$pattern>, but was <$raw_section_text>"
 }
 
+test_spaceship_jj_description_is_not_expanded() {
+  # Prepare the environment
+  export SPACESHIP_JJ_DESC_MAX_LENGTH=999
+
+  jj desc -m '100%F{red} $(touch pwned_subst) `touch pwned_tick` \$HOME \n \\' > /dev/null 2>&1
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  # Expand the prompt escapes only, as is the case when the prompt is displayed
+  local expanded="$(setopt no_prompt_subst; print -rP -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  [[ ! -e pwned_subst && ! -e pwned_tick ]] \
+    || fail "commands embedded in the description were executed"
+
+  local expected='(100%F{red} $(touch pwned_subst) `touch pwned_tick` \$HOME \n \\)'
+
+  [[ "$raw_section_text" == *"$expected"* ]] \
+    || fail "render in jj dir was: <$raw_section_text>, expected literal: <$expected>"
+}
+
+test_spaceship_jj_invalid_max_length() {
+  # Prepare the environment
+  export SPACESHIP_JJ_DESC_MAX_LENGTH="invalid"
+
+  jj desc -m "Init" > /dev/null 2>&1
+
+  local actual="$(spaceship::testkit::render_prompt)"
+  local expanded="$(print -P -- "$actual")"
+  local raw_section_text="$(printf '%s' "$expanded" | sed -E $'s/\x1b\\[[0-9;]*[[:alpha:]]//g')"
+
+  local pattern='^on 🥋 [k-z0-9]{8} \(Init\) $'
+
+  [[ "$raw_section_text" =~ "$pattern" ]] \
+    || fail "render in jj dir was: <$raw_section_text>, expected pattern match: <$pattern>"
+
+  export SPACESHIP_JJ_DESC_MAX_LENGTH=999
+}
+
 # ------------------------------------------------------------------------------
 # SHUNIT2
 # Run tests with shunit2
