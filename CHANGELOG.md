@@ -1,3 +1,7 @@
+### v0.47.1 (2026-11-05)
+
+* Update to demonstrate support with Jujutsu v0.47.1.
+
 ### v0.46.0 (2026-10-21)
 
 * Render descriptions and bookmark names literally so that `%` and `\` sequences within them can no longer alter the prompt.
